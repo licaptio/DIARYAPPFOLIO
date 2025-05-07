@@ -170,3 +170,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
+// Conectar botón guardar de forma segura al cargar el DOM
+document.addEventListener("DOMContentLoaded", () => {
+  const btn = document.getElementById("guardarNotaBtn");
+  if (btn) {
+    btn.addEventListener("click", saveNote);
+  }
+});
