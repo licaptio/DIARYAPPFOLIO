@@ -2,6 +2,28 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
+    authDomain: "notasfoliador.firebaseapp.com",
+    projectId: "notasfoliador",
+    storageBucket: "notasfoliador.firebasestorage.app",
+    messagingSenderId: "449665263510",
+    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Notas App</title>
@@ -172,7 +194,7 @@
   </style>
 </head>
 <body>
-  <h1>Notas App (Firebase)</h1>
+  <h1>Notas App (LocalStorage)</h1>
 
   <div class="nav-buttons">
     <button onclick="showSection('menu')">Menu Principal</button>
@@ -208,6 +230,6 @@
 
   <div class="foliador" style="display: none;">Foliador</div>
 
-  <script type="module" src="unificado.js"></script>
+  <script src="unificado.js"></script>
 </body>
 </html>
