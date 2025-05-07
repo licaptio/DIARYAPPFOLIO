@@ -194,7 +194,10 @@
   </style>
 </head>
 <body>
-  <h1>Notas App (LocalStorage)</h1>
+  <h1>Notas App (con Firebase)</h1>
+
+  <button onclick="logout()" style="position: absolute; top: 1em; right: 1em;">Cerrar sesión</button>
+
 
   <div class="nav-buttons">
     <button onclick="showSection('menu')">Menu Principal</button>
@@ -231,5 +234,16 @@
   <div class="foliador" style="display: none;">Foliador</div>
 
   <script src="unificado.js"></script>
+
+<script type="module">
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  const auth = getAuth();
+  window.logout = function () {
+    signOut(auth).then(() => {
+      window.location.href = "login.html";
+    });
+  };
+</script>
+
 </body>
 </html>
