@@ -14,7 +14,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
@@ -27,7 +26,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app);
 
 let editingId = null;
 
@@ -87,7 +85,7 @@ async function renderSummaries() {
       const div = document.createElement("div");
       div.className = "note-card";
       div.innerHTML = `<strong>${note.author}</strong><br><small>${note.date} ${note.time}</small>`;
-      div.onclick = () => window.location.href = \`verNota.html?id=\${docSnap.id}\`;
+      div.onclick = () => window.location.href = `verNota.html?id=${docSnap.id}`;
       container.appendChild(div);
     }
   });
@@ -106,12 +104,12 @@ async function renderNotes(archived) {
       const card = document.createElement("div");
       card.className = "note-card";
       card.innerHTML = `
-        <h3>\${note.author}</h3>
-        <p>\${note.content}</p>
-        <small>\${note.date} \${note.time}</small><br>
-        <button onclick="editNote('\${docSnap.id}')">Editar</button>
-        <button onclick="toggleArchive('\${docSnap.id}', \${archived})">\${archived ? "Desarchivar" : "Archivar"}</button>
-        <button onclick="deleteNote('\${docSnap.id}')">Eliminar</button>
+        <h3>${note.author}</h3>
+        <p>${note.content}</p>
+        <small>${note.date} ${note.time}</small><br>
+        <button onclick="editNote('${docSnap.id}')">Editar</button>
+        <button onclick="toggleArchive('${docSnap.id}', ${archived})">${archived ? "Desarchivar" : "Archivar"}</button>
+        <button onclick="deleteNote('${docSnap.id}')">Eliminar</button>
       `;
       container.appendChild(card);
     }
@@ -162,20 +160,5 @@ window.deleteNote = deleteNote;
 window.showSection = showSection;
 
 document.addEventListener("DOMContentLoaded", () => {
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = "login.html";
-    } else {
-      showSection("menu");
-    }
-  });
-});
-
-
-// Conectar botón guardar de forma segura al cargar el DOM
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("guardarNotaBtn");
-  if (btn) {
-    btn.addEventListener("click", saveNote);
-  }
+  showSection("menu");
 });

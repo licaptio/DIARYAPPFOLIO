@@ -2,28 +2,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
-    authDomain: "notasfoliador.firebaseapp.com",
-    projectId: "notasfoliador",
-    storageBucket: "notasfoliador.firebasestorage.app",
-    messagingSenderId: "449665263510",
-    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      window.location.href = "login.html";
-    }
-  });
-</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Notas App</title>
@@ -194,10 +172,7 @@
   </style>
 </head>
 <body>
-  <h1>Notas App (con Firebase)</h1>
-
-  <button onclick="logout()" style="position: absolute; top: 1em; right: 1em;">Cerrar sesión</button>
-
+  <h1>Notas App (Firebase)</h1>
 
   <div class="nav-buttons">
     <button onclick="showSection('menu')">Menu Principal</button>
@@ -211,7 +186,7 @@
         <div class="note-form">
           <input type="text" id="author" placeholder="Autor (opcional)" />
           <textarea id="content" placeholder="Contenido de la nota"></textarea>
-          <button type="button" >Guardar Nota</button>
+          <button onclick="saveNote()">Guardar Nota</button>
         </div>
       </div>
       <div class="notes-summary">
@@ -234,16 +209,5 @@
   <div class="foliador" style="display: none;">Foliador</div>
 
   <script type="module" src="unificado.js"></script>
-
-<script type="module">
-  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  const auth = getAuth();
-  window.logout = function () {
-    signOut(auth).then(() => {
-      window.location.href = "login.html";
-    });
-  };
-</script>
-
 </body>
 </html>
