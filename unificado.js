@@ -162,3 +162,15 @@ window.showSection = showSection;
 document.addEventListener("DOMContentLoaded", () => {
   showSection("menu");
 });
+
+import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+const auth = getAuth(app);
+
+window.logout = async function () {
+  try {
+    await signOut(auth);
+    window.location.href = "login.html";
+  } catch (error) {
+    alert("Error al cerrar sesión: " + error.message);
+  }
+};

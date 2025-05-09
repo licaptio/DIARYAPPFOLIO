@@ -178,6 +178,8 @@
     <button onclick="showSection('menu')">Menu Principal</button>
     <button onclick="showSection('activas')">Ver Notas Activas</button>
     <button onclick="showSection('archivadas')">Ver Archivadas</button>
+<button onclick="logout()">Cerrar sesión</button>
+
   </div>
 
   <div id="menu" class="section">
@@ -207,6 +209,29 @@
   </div>
 
   <div class="foliador" style="display: none;">Foliador</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
+    authDomain: "notasfoliador.firebaseapp.com",
+    projectId: "notasfoliador",
+    storageBucket: "notasfoliador.firebasestorage.app",
+    messagingSenderId: "449665263510",
+    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    }
+  });
+</script>
 
   <script type="module" src="unificado.js"></script>
 </body>
