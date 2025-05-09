@@ -1,30 +1,44 @@
 # Notas Firebase App 📝
 
-Aplicación web para tomar y gestionar notas conectada a Firebase Firestore, con folios únicos y funciones de edición, archivado y eliminación.
+Aplicación web para tomar y gestionar notas personales con autenticación, foliador automático y control de acceso basado en sesión.
 
 ## 🔧 Tecnologías
 - HTML + JavaScript
-- Firebase Firestore
-- GitHub Pages
+- Firebase Authentication
+- Firebase Firestore (Base de datos)
+- GitHub Pages (Hosting)
 
-## 🚀 Uso
-1. Abre la app
-2. Crea, edita o elimina notas
-3. Las notas se guardan automáticamente en Firestore
+## 🚀 Funcionalidades principales
+- Registro e inicio de sesión con correo y contraseña
+- Creación, edición, archivado y eliminación de notas
+- Foliador automático (número único por nota, secuencial)
+- Redirección automática si el usuario no está logueado
+- Control de acceso seguro (Firestore solo permite usuarios autenticados)
+- Cierre de sesión desde la interfaz
+- Visualización de notas activas y archivadas
+- Vista detallada de cada nota individual (verNota.html)
 
 ## 📁 Firebase
 - Colección: `notas`
-- Documento de control: `config/folio`
+- Documento de control para foliador: `config/folio`
+- Reglas de seguridad: Solo usuarios autenticados pueden acceder a los documentos
 
 ## 🔐 Seguridad
-Usar reglas de prueba durante el desarrollo:
-```
+Las reglas activas en Firestore permiten únicamente el acceso a usuarios autenticados:
+
+```js
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if true;
+    match /notas/{noteId} {
+      allow read, write: if request.auth != null;
+    }
+    match /config/folio {
+      allow read, write: if request.auth != null;
     }
   }
 }
 ```
+
+## 🌐 Despliegue
+La aplicación puede ser alojada en GitHub Pages o cualquier hosting estático compatible.

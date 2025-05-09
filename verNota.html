@@ -46,27 +46,31 @@
     <small id="note-date"></small><br>
     <button onclick="window.location.href='index.html'">Regresar</button>
   </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
+    authDomain: "notasfoliador.firebaseapp.com",
+    projectId: "notasfoliador",
+    storageBucket: "notasfoliador.firebasestorage.app",
+    messagingSenderId: "449665263510",
+    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+  };
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
-      authDomain: "notasfoliador.firebaseapp.com",
-      projectId: "notasfoliador",
-      storageBucket: "notasfoliador.firebasestorage.app",
-      messagingSenderId: "449665263510",
-      appId: "1:449665263510:web:b049e4c02babe203da1fb7"
-    };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
 
-    const params = new URLSearchParams(window.location.search);
-    const id = params.get("id");
-
-    async function cargarNota() {
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      window.location.href = "login.html";
+    } else {
       const ref = doc(db, "notas", id);
       const snap = await getDoc(ref);
       if (snap.exists()) {
@@ -78,8 +82,9 @@
         document.body.innerHTML = "<p>No se encontró la nota.</p>";
       }
     }
+  });
+</script>
 
-    cargarNota();
-  </script>
+
 </body>
 </html>
