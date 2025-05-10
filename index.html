@@ -168,6 +168,16 @@
         margin: 5px 5px;
         width: 100%;
       }
+.note-card.important {
+  animation: blink-green 1.5s infinite;
+  border: 2px solid lime;
+  box-shadow: 0 0 10px lime;
+}
+
+@keyframes blink-green {
+  0%, 100% { opacity: 1; box-shadow: 0 0 10px lime; }
+  50% { opacity: 0.4; box-shadow: 0 0 2px lime; }
+}
     }
   </style>
 </head>

@@ -56,15 +56,17 @@ async function saveNote() {
 
   const folio = await getNextFolio();
 
-  await addDoc(collection(db, "notas"), {
-    author,
-    content,
-    date,
-    time,
-    timestamp: now.toISOString(),
-    folio,
-    archived: false
-  });
+await addDoc(collection(db, "notas"), {
+  author,
+  content,
+  date,
+  time,
+  timestamp: now.toISOString(),
+  folio,
+  archived: false,
+  important: false // ← esto es lo nuevo
+});
+
 
   alert("Nota guardada en Firebase con nuevo folio");
   document.getElementById("author").value = "";
@@ -83,13 +85,27 @@ async function renderSummaries() {
     const note = docSnap.data();
     if (!note.archived) {
       const div = document.createElement("div");
-      div.className = "note-card";
-      div.innerHTML = `<strong>${note.author}</strong><br><small>${note.date} ${note.time}</small>`;
-      div.onclick = () => window.location.href = `verNota.html?id=${docSnap.id}`;
-      container.appendChild(div);
-    }
-  });
+div.className = "note-card";
+div.dataset.id = docSnap.id;
+div.innerHTML = `
+  <label style="display:flex; align-items:center; gap:10px;">
+    <input type="checkbox" onchange="toggleImportant(this)" ${note.important ? 'checked' : ''}>
+    <div style="flex-grow:1; cursor:pointer;" onclick="window.location.href='verNota.html?id=${docSnap.id}'">
+      <strong>${note.author}</strong><br>
+      <small>${note.date} ${note.time}</small>
+    </div>
+  </label>
+`;
+
+if (note.important) {
+  div.classList.add('important');
 }
+container.appendChild(div); // asegúrate de que esto esté presente también
+}
+}); // ← cierre de snap.forEach
+} // ← cierre de renderSummaries()
+
+
 
 async function renderNotes(archived) {
   const container = document.getElementById(archived ? "archived-notes-container" : "active-notes-container");
@@ -172,5 +188,27 @@ window.logout = async function () {
     window.location.href = "login.html";
   } catch (error) {
     alert("Error al cerrar sesión: " + error.message);
+  }
+};
+
+window.toggleImportant = async function (checkbox) {
+  const card = checkbox.closest('.note-card');
+  const id = card.dataset.id;
+
+  if (checkbox.checked) {
+    card.classList.add('important');
+  } else {
+    card.classList.remove('important');
+  }
+
+  // Actualiza en Firebase
+  const ref = doc(db, "notas", id);
+  try {
+    await updateDoc(ref, {
+      important: checkbox.checked
+    });
+  } catch (e) {
+    console.error("Error actualizando importancia:", e);
+    alert("No se pudo guardar el cambio de importancia");
   }
 };
