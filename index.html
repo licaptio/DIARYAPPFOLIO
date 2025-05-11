@@ -157,6 +157,32 @@
     }
   </style>
 </head>
+<script>
+  let inactivityTimeout;
+
+  function startInactivityTimer() {
+    clearTimeout(inactivityTimeout);
+    inactivityTimeout = setTimeout(async () => {
+      alert("Sesión cerrada por inactividad");
+
+      // Cierra sesión de Firebase
+      const { getAuth, signOut } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+      const auth = getAuth();
+      await signOut(auth);
+
+      // Redirige al login
+      window.location.href = "login.html";
+    }, 2 * 60 * 1000); // 2 minutos
+  }
+
+  ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'].forEach(event => {
+    document.addEventListener(event, startInactivityTimer, false);
+  });
+
+  startInactivityTimer(); // Iniciar temporizador al cargar
+</script>
+
+
 <body>
   <h1>Notas App (Firebase)</h1>
   <div class="nav-buttons">
