@@ -9,45 +9,13 @@
     * {
       box-sizing: border-box;
     }
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  background-color: #ffffff;
-  position: relative;
-  min-height: 100vh;
-}
-
-.nav-buttons {
-  position: relative;
-  text-align: center;
-  z-index: 1000;
-  padding-top: 40px;
-  background: rgba(0, 0, 0, 0.5);
-}
-
-.nav-buttons button {
-  margin: 10px;
-  padding: 15px 30px;
-  background: #4CAF50;
-  border: none;
-  border-radius: 8px;
-  font-size: 1.2em;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-}
-
-@media (max-width: 768px) {
-  .nav-buttons button {
-    font-size: 1.4em;
-    padding: 18px 40px;
-    width: 90%;
-    margin: 10px auto;
-    display: block;
-  }
-}
-
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background-color: #ffffff;
+      position: relative;
+    }
     h1 {
       text-align: center;
       font-size: 2em;
@@ -187,23 +155,6 @@ body {
       0%, 100% { opacity: 1; box-shadow: 0 0 10px lime; }
       50% { opacity: 0.4; box-shadow: 0 0 2px lime; }
     }
-
-.nav-acceso {
-  background: url('wraith.jpg') no-repeat center center;
-  background-size: cover;
-  height: 75vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.nav-acceso .nav-buttons {
-  background: rgba(0, 0, 0, 0.6);
-  padding: 40px;
-  border-radius: 10px;
-}
-
-
   </style>
 </head>
 <script>
@@ -233,27 +184,13 @@ body {
 
 
 <body>
-
-<script>
-  window.onload = () => {
-    document.querySelectorAll('.section').forEach(el => el.style.display = 'none');
-    document.querySelector('.foliador').style.display = 'none';
-    document.querySelector('h1').style.display = 'none';
-  };
-</script>
-
-<div class="nav-acceso">
+  <h1>Notas App (Firebase)</h1>
   <div class="nav-buttons">
     <button onclick="showSection('menu')">Menu Principal</button>
     <button onclick="showSection('activas')">Ver Notas Activas</button>
     <button onclick="showSection('archivadas')">Ver Archivadas</button>
     <button onclick="logout()">Cerrar sesión</button>
   </div>
-</div>
-
-
-
-
   <div id="menu" class="section">
     <div class="main-container">
       <div class="note-form-section">
