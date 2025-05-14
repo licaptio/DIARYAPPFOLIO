@@ -88,14 +88,16 @@ async function renderSummaries() {
 div.className = "note-card";
 div.dataset.id = docSnap.id;
 div.innerHTML = `
-  <label style="display:flex; align-items:center; gap:10px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+    <strong>${note.author}</strong>
     <input type="checkbox" onchange="toggleImportant(this)" ${note.important ? 'checked' : ''}>
-    <div style="flex-grow:1; cursor:pointer;" onclick="window.location.href='verNota.html?id=${docSnap.id}'">
-      <strong>${note.author}</strong><br>
-      <small>${note.date} ${note.time}</small>
-    </div>
-  </label>
+  </div>
+  <small style="display: block; margin-bottom: 10px;">${note.date} ${note.time}</small>
+  <div style="cursor:pointer;" onclick="window.location.href='verNota.html?id=${docSnap.id}'">
+    <em>Haz clic para ver nota...</em>
+  </div>
 `;
+
 
 if (note.important) {
   div.classList.add('important');
