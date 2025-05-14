@@ -164,8 +164,8 @@
 }
 
 .note-grid .note-card {
-  flex: 0 1 25%;
-  max-width: 25%;
+  flex: 0 1 35%;
+  max-width: 35%;
   box-sizing: border-box;
 }
 
@@ -219,12 +219,14 @@
 }
 
 .note-grid .note-card strong {
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 600;
+  max-width: 100%;
 }
+
 
 .note-grid .note-card small {
   font-size: 0.85rem;
@@ -232,7 +234,10 @@
   white-space: nowrap;
 }
 
-
+.note-grid .note-card * {
+  font-family: Arial, sans-serif;
+  font-size: 0.85rem;
+}
 
 
   </style>
