@@ -93,23 +93,42 @@
       font-weight: bold;
       cursor: pointer;
     }
-    .note-card {
-      background: white;
-      padding: 15px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .note-card button {
-      margin-top: 10px;
-      margin-right: 5px;
-      padding: 8px 12px;
-      background: #4CAF50;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
+.note-card {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.note-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.note-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.note-card strong {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.note-card small {
+  display: block;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.note-card.important {
+  border-left: 4px solid #4CAF50;
+  background-color: #f8fff8;
+}
     .foliador {
       opacity: 0;
       position: fixed;
@@ -156,13 +175,6 @@
       50% { opacity: 0.4; box-shadow: 0 0 2px lime; }
     }
   
-.note-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-}
-
 .note-grid {
   display: flex;
   flex-direction: column;
@@ -246,17 +258,6 @@
   -webkit-box-orient: vertical;
 }
 
-.note-grid .note-card {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  height: auto;
-  min-height: 80px;
-  padding: 12px;
-  gap: 10px;
-}
-
 .note-grid .note-card label {
   display: flex;
   align-items: center;
@@ -288,6 +289,18 @@
   color: #666;
 }
 
+.note-card::after {
+  content: "→";
+  float: right;
+  color: #4CAF50;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.note-card:hover::after {
+  opacity: 1;
+}
 
   </style>
 </head>

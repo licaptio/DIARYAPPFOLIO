@@ -81,23 +81,34 @@ async function renderSummaries() {
 
   const q = query(collection(db, "notas"), orderBy("folio", "desc"));
   const snap = await getDocs(q);
+  
   snap.forEach(docSnap => {
     const note = docSnap.data();
     if (!note.archived) {
       const div = document.createElement("div");
-div.className = "note-card";
-div.dataset.id = docSnap.id;
-div.innerHTML = `
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-    <strong>${note.author}</strong>
-    <input type="checkbox" onchange="toggleImportant(this)" ${note.important ? 'checked' : ''}>
-  </div>
-  <small style="display: block; margin-bottom: 10px;">${note.date} ${note.time}</small>
-  <div style="cursor:pointer;" onclick="window.location.href='verNota.html?id=${docSnap.id}'">
-    <em>Haz clic para ver nota...</em>
-  </div>
-`;
-
+      div.className = `note-card ${note.important ? "important" : ""}`;
+      div.dataset.id = docSnap.id;
+      
+      // Estructura simplificada sin el texto innecesario
+      div.innerHTML = `
+        <div class="note-header">
+          <strong>${note.author}</strong>
+          <input type="checkbox" onchange="toggleImportant(this)" 
+                 ${note.important ? 'checked' : ''}>
+        </div>
+        <small>${note.date} ${note.time}</small>
+      `;
+      
+      // Hacer toda la tarjeta clickeable
+      div.style.cursor = "pointer";
+      div.addEventListener("click", () => {
+        window.location.href = `verNota.html?id=${docSnap.id}`;
+      });
+      
+      container.appendChild(div);
+    }
+  });
+}
 
 if (note.important) {
   div.classList.add('important');
