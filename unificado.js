@@ -81,34 +81,21 @@ async function renderSummaries() {
 
   const q = query(collection(db, "notas"), orderBy("folio", "desc"));
   const snap = await getDocs(q);
-  
   snap.forEach(docSnap => {
     const note = docSnap.data();
     if (!note.archived) {
       const div = document.createElement("div");
-      div.className = `note-card ${note.important ? "important" : ""}`;
-      div.dataset.id = docSnap.id;
-      
-      // Estructura simplificada sin el texto innecesario
-      div.innerHTML = `
-        <div class="note-header">
-          <strong>${note.author}</strong>
-          <input type="checkbox" onchange="toggleImportant(this)" 
-                 ${note.important ? 'checked' : ''}>
-        </div>
-        <small>${note.date} ${note.time}</small>
-      `;
-      
-      // Hacer toda la tarjeta clickeable
-      div.style.cursor = "pointer";
-      div.addEventListener("click", () => {
-        window.location.href = `verNota.html?id=${docSnap.id}`;
-      });
-      
-      container.appendChild(div);
-    }
-  });
-}
+div.className = "note-card";
+div.dataset.id = docSnap.id;
+div.innerHTML = `
+  <label style="display:flex; align-items:center; gap:10px;">
+    <input type="checkbox" onchange="toggleImportant(this)" ${note.important ? 'checked' : ''}>
+    <div style="flex-grow:1; cursor:pointer;" onclick="window.location.href='verNota.html?id=${docSnap.id}'">
+      <strong>${note.author}</strong><br>
+      <small>${note.date} ${note.time}</small>
+    </div>
+  </label>
+`;
 
 if (note.important) {
   div.classList.add('important');
