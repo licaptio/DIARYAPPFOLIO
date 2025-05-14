@@ -185,6 +185,28 @@
   }
 }
 
+/* Asegurar que todas las tarjetas tengan altura mínima y contenido alineado */
+.note-grid .note-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 120px;
+  overflow: hidden;
+  padding: 10px 12px;
+}
+
+/* Limitar el texto del resumen a 2 líneas con puntos suspensivos */
+.note-grid .note-card label > div {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+
+
+
 
   </style>
 </head>
