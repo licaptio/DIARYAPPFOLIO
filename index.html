@@ -185,16 +185,6 @@
   }
 }
 
-/* Asegurar que todas las tarjetas tengan altura mínima y contenido alineado */
-.note-grid .note-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 120px;
-  overflow: hidden;
-  padding: 10px 12px;
-}
-
 /* Limitar el texto del resumen a 2 líneas con puntos suspensivos */
 .note-grid .note-card label > div {
   overflow: hidden;
@@ -204,6 +194,43 @@
   -webkit-box-orient: vertical;
 }
 
+.note-grid .note-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: auto;
+  min-height: 80px;
+  padding: 12px;
+  gap: 10px;
+}
+
+.note-grid .note-card label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.note-grid .note-card label > div {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.note-grid .note-card strong {
+  font-size: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 600;
+}
+
+.note-grid .note-card small {
+  font-size: 0.85rem;
+  color: #555;
+  white-space: nowrap;
+}
 
 
 
