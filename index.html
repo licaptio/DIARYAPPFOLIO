@@ -185,27 +185,25 @@
 
 <body>
   <h1>Notas App (Firebase)</h1>
-  <div class="nav-buttons">
-    <button onclick="showSection('menu')">Menu Principal</button>
-    <button onclick="showSection('activas')">Ver Notas Activas</button>
-    <button onclick="showSection('archivadas')">Ver Archivadas</button>
-    <button onclick="logout()">Cerrar sesión</button>
-  </div>
-  <div id="menu" class="section">
-    <div class="main-container">
-      <div class="note-form-section">
-        <div class="note-form">
-          <input type="text" id="author" placeholder="Autor (opcional)" />
-          <textarea id="content" placeholder="Contenido de la nota"></textarea>
-          <button onclick="saveNote()">Guardar Nota</button>
-        </div>
-      </div>
-      <div class="notes-summary">
-        <h3>Resumen de Notas Activas</h3>
-        <div id="notes-summary-container"></div>
+<div class="nav-buttons">
+  <button onclick="showSection('menu')">Generar Nota</button>
+  <button onclick="showSection('activas')">Ver Notas Activas</button>
+  <button onclick="showSection('archivadas')">Ver Archivadas</button>
+  <button onclick="showSection('resumen')">Resumen de Notas</button>
+  <button onclick="logout()">Cerrar sesión</button>
+</div>
+<div id="menu" class="section">
+  <div class="main-container">
+    <div class="note-form-section">
+      <div class="note-form">
+        <input type="text" id="author" placeholder="Autor (opcional)" />
+        <textarea id="content" placeholder="Contenido de la nota"></textarea>
+        <button onclick="saveNote()">Guardar Nota</button>
       </div>
     </div>
   </div>
+</div>
+
   <div id="activas" class="section">
     <h2>Notas Activas</h2>
     <div id="active-notes-container" class="notes-list"></div>
@@ -214,7 +212,14 @@
     <h2>Notas Archivadas</h2>
     <div id="archived-notes-container" class="notes-list"></div>
   </div>
-  <div class="foliador" style="display: none;">Foliador</div>
+<div id="resumen" class="section">
+  <div class="notes-summary">
+    <h2>Resumen de Notas Activas</h2>
+    <div id="notes-summary-container"></div>
+  </div>
+</div>
+
+ <div class="foliador" style="display: none;">Foliador</div>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";

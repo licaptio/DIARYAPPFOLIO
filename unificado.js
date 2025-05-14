@@ -147,7 +147,7 @@ async function editNote(id) {
     document.getElementById("author").value = note.author || '';
     document.getElementById("content").value = note.content || '';
     editingId = id;
-    showSection("menu");
+    showSection("resumen");
   }
 }
 
@@ -159,7 +159,7 @@ async function toggleArchive(id, archived) {
 }
 
 function showSection(id) {
-  const sections = ["menu", "activas", "archivadas"];
+  const sections = ["menu", "activas", "archivadas", "resumen"];
   sections.forEach(s => {
     const el = document.getElementById(s);
     if (el) el.style.display = s === id ? "flex" : "none";
@@ -167,6 +167,7 @@ function showSection(id) {
   if (id === "activas") renderNotes(false);
   if (id === "archivadas") renderNotes(true);
   if (id === "menu") renderSummaries();
+  if (id === "resumen") renderSummaries();
 }
 
 window.saveNote = saveNote;
@@ -176,7 +177,7 @@ window.deleteNote = deleteNote;
 window.showSection = showSection;
 
 document.addEventListener("DOMContentLoaded", () => {
-  showSection("menu");
+  showSection("resumen");
 });
 
 import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
