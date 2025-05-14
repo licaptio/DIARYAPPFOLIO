@@ -163,10 +163,33 @@
   justify-content: center;
 }
 
+.note-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .note-grid .note-card {
-  flex: 0 1 35%;
-  max-width: 35%;
-  box-sizing: border-box;
+  width: 100%;
+  display: block;
+  padding: 16px 20px;
+  font-size: 1rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.note-grid .note-card strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.note-grid .note-card small {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
 }
 
 /* Para tablets */
@@ -218,25 +241,22 @@
   overflow: hidden;
 }
 
-.note-grid .note-card strong {
-  font-weight: 600;
-  font-size: 0.95rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-
-.note-grid .note-card small {
-  font-size: 0.85rem;
-  color: #555;
-  white-space: nowrap;
-}
-
 .note-grid .note-card * {
   font-family: Arial, sans-serif;
   font-size: 0.85rem;
+}
+
+.note-grid .note-card strong {
+  display: block;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.note-grid .note-card small {
+  display: block;
+  margin-bottom: 5px;
+  color: #666;
 }
 
 
