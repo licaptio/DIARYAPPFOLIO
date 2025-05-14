@@ -155,6 +155,37 @@
       0%, 100% { opacity: 1; box-shadow: 0 0 10px lime; }
       50% { opacity: 0.4; box-shadow: 0 0 2px lime; }
     }
+  
+.note-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.note-grid .note-card {
+  flex: 0 1 25%;
+  max-width: 25%;
+  box-sizing: border-box;
+}
+
+/* Para tablets */
+@media (max-width: 1024px) {
+  .note-grid .note-card {
+    flex: 0 1 45%;
+    max-width: 45%;
+  }
+}
+
+/* Para celulares */
+@media (max-width: 600px) {
+  .note-grid .note-card {
+    flex: 0 1 100%;
+    max-width: 100%;
+  }
+}
+
+
   </style>
 </head>
 <script>
@@ -215,7 +246,7 @@
 <div id="resumen" class="section">
   <div class="notes-summary">
     <h2>Resumen de Notas Activas</h2>
-    <div id="notes-summary-container"></div>
+    <div id="notes-summary-container" class="note-grid"></div>
   </div>
 </div>
 
