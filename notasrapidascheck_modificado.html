@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Notas Rápidas</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      text-align: center;
+    }
+    #noteInput {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+    }
+    #addBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    
+    .note input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    .noteText {
+      flex-grow: 1;
+      outline: none;
+    }
+    .completed {
+      text-decoration: line-through;
+      color: gray;
+    }
+    .deleteBtn {
+      margin-left: 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+  
+    #notesContainer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 20px;
+      justify-content: center;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .note {
+      width: 45%;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+</style>
+</head>
+<body>
+  <h1>Notas Rápidas</h1>
+  <div style="text-align: center;">
+    <input type="text" id="noteInput" placeholder="Escribe una nota..." />
+    <button id="addBtn">Agregar</button>
+  </div>
+  <div id="notesContainer"></div>
+
+  <script>
+    const input = document.getElementById("noteInput");
+    const btn = document.getElementById("addBtn");
+    const container = document.getElementById("notesContainer");
+
+    let notes = JSON.parse(localStorage.getItem("notas")) || [];
+
+    function saveNotes() {
+      localStorage.setItem("notas", JSON.stringify(notes));
+    }
+
+    function renderNotes() {
+      container.innerHTML = "";
+      notes.forEach((note, index) => {
+        const div = document.createElement("div");
+        div.className = "note";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = note.completed;
+        checkbox.addEventListener("change", () => {
+          notes[index].completed = checkbox.checked;
+          saveNotes();
+          renderNotes();
+        });
+
+        const span = document.createElement("span");
+        span.contentEditable = true;
+        span.textContent = note.text;
+        span.className = "noteText" + (note.completed ? " completed" : "");
+        span.addEventListener("blur", () => {
+          notes[index].text = span.textContent.trim();
+          saveNotes();
+        });
+        span.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            span.blur();
+          }
+        });
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Eliminar";
+        deleteBtn.className = "deleteBtn";
+        deleteBtn.onclick = () => {
+          notes.splice(index, 1);
+          saveNotes();
+          renderNotes();
+        };
+
+        div.appendChild(checkbox);
+        div.appendChild(span);
+        div.appendChild(deleteBtn);
+        container.appendChild(div);
+      });
+    }
+
+    btn.onclick = () => {
+      const text = input.value.trim();
+      if (text) {
+        notes.push({ text, completed: false });
+        input.value = "";
+        saveNotes();
+        renderNotes();
+      }
+    };
+
+    renderNotes();
+  </script>
+</body>
+</html>

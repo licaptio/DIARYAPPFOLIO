@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Pagos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .formulario {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .formulario input {
+      padding: 10px;
+      font-size: 16px;
+      width: 200px;
+    }
+
+    #guardarBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #resumenPagos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .pago-box {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      width: 200px;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .pago-box button {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 5px;
+    }
+
+    .pago-box p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pagos</h1>
+  <div class="formulario">
+    <input type="text" id="inputProveedor" placeholder="Proveedor">
+    <input type="text" id="inputPago" placeholder="Monto o concepto">
+    <button id="guardarBtn">Guardar</button>
+  </div>
+
+  <div id="resumenPagos"></div>
+
+  <script>
+    const inputPago = document.getElementById('inputPago');
+    const inputProveedor = document.getElementById('inputProveedor');
+    const btnGuardar = document.getElementById('guardarBtn');
+    const resumen = document.getElementById('resumenPagos');
+
+    // Cargar al inicio
+    window.onload = () => {
+      const pagos = JSON.parse(localStorage.getItem('pagos')) || [];
+      pagos.forEach((pago, index) => agregarPagoAlResumen(pago, index));
+    };
+
+    btnGuardar.addEventListener('click', () => {
+      const proveedor = inputProveedor.value.trim();
+      const monto = inputPago.value.trim();
+
+      if (proveedor && monto) {
+        const nuevoPago = { proveedor, monto };
+        const pagos = JSON.parse(localStorage.getItem('pagos')) || [];
+        pagos.push(nuevoPago);
+        localStorage.setItem('pagos', JSON.stringify(pagos));
+        agregarPagoAlResumen(nuevoPago, pagos.length - 1);
+        inputProveedor.value = '';
+        inputPago.value = '';
+      }
+    });
+
+    function agregarPagoAlResumen(pago, index) {
+      const div = document.createElement('div');
+      div.className = 'pago-box';
+
+      const proveedor = document.createElement('p');
+      proveedor.textContent = `Proveedor: ${pago.proveedor}`;
+      div.appendChild(proveedor);
+
+      const monto = document.createElement('p');
+      monto.textContent = `Pago: ${pago.monto}`;
+      div.appendChild(monto);
+
+      const btnEliminar = document.createElement('button');
+      btnEliminar.textContent = 'X';
+      btnEliminar.onclick = () => eliminarPago(index);
+      div.appendChild(btnEliminar);
+
+      resumen.appendChild(div);
+    }
+
+    function eliminarPago(index) {
+      let pagos = JSON.parse(localStorage.getItem('pagos')) || [];
+      pagos.splice(index, 1);
+      localStorage.setItem('pagos', JSON.stringify(pagos));
+      location.reload(); // Recargar para actualizar el DOM
+    }
+  </script>
+</body>
+</html>
