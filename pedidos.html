@@ -213,39 +213,48 @@ function archivarNota(id, estado) {
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
   import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBbWF230CSuc_RyX2nZVZxFPGkPrQsQXxE",
-    authDomain: "notasfoliador.firebaseapp.com",
-    projectId: "notasfoliador",
-    storageBucket: "notasfoliador.appspot.com",
-    messagingSenderId: "449665263510",
-    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBbWF230CSuc_RyX2nZVZxFPGkPrQsQXxE",
+  authDomain: "notasfoliador.firebaseapp.com",
+  projectId: "notasfoliador",
+  storageBucket: "notasfoliador.appspot.com",
+  messagingSenderId: "449665263510",
+  appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
-import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
 
 setPersistence(auth, browserLocalPersistence)
   .then(() => {
-    document.body.classList.add("oculto");
+    document.body.classList.add("oculto"); // Puedes dejarlo aquí también
+
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         alert("🔒 Debes iniciar sesión para usar esta función.");
         window.location.href = "login.html";
       } else {
-document.body.classList.remove("oculto");
-document.getElementById("loading").style.display = "none";
-window.db = db;
+        document.body.classList.remove("oculto");
+        document.getElementById("loading").style.display = "none";
+        window.db = db;
+    mostrarNotas();
+    mostrarArchivados();
       }
     });
   })
   .catch((error) => {
     console.error("Error al establecer persistencia:", error);
   });
+
 
 
 </script>
