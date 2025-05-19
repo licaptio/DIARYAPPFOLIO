@@ -268,6 +268,22 @@ setPersistence(auth, browserLocalPersistence)
   };
 </script>
 
+<script type="module">
+  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+
+  const auth = getAuth();
+
+  window.logout = () => {
+    signOut(auth)
+      .then(() => {
+        localStorage.setItem("bloqueado", "false"); // Limpia seguridad local si usas PIN
+        window.location.href = "login.html"; // Redirige al login
+      })
+      .catch((error) => {
+        alert("❌ Error al cerrar sesión: " + error.message);
+      });
+  };
+</script>
 
 
 </body>
