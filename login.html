@@ -77,15 +77,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import {
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence
-} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
@@ -109,34 +101,28 @@
       document.getElementById("message").textContent = "";
     }
 
-window.login = async function () {
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const msg = document.getElementById("message");
+    window.login = async function () {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const msg = document.getElementById("message");
 
-  try {
-    // 🟢 Establece persistencia para que recuerde la sesión
-    await setPersistence(auth, browserLocalPersistence);
-
-    if (creatingAccount) {
-      await createUserWithEmailAndPassword(auth, email, password);
-      msg.style.color = "green";
-      msg.textContent = "Cuenta creada. Redirigiendo...";
-    } else {
-      await signInWithEmailAndPassword(auth, email, password);
-      msg.style.color = "green";
-      msg.textContent = "Inicio de sesión exitoso. Redirigiendo...";
-    }
-
-    setTimeout(() => {
-      window.location.href = "index.html";
-    }, 1500);
-  } catch (error) {
-    msg.style.color = "red";
-    msg.textContent = error.message;
-  }
-};
-
+      try {
+        if (creatingAccount) {
+          await createUserWithEmailAndPassword(auth, email, password);
+          msg.style.color = "green";
+          msg.textContent = "Cuenta creada. Redirigiendo...";
+        } else {
+          await signInWithEmailAndPassword(auth, email, password);
+          msg.style.color = "green";
+          msg.textContent = "Inicio de sesión exitoso. Redirigiendo...";
+        }
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1500);
+      } catch (error) {
+        msg.textContent = error.message;
+      }
+    };
 
     onAuthStateChanged(auth, (user) => {
       if (user) {

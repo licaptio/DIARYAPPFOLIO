@@ -160,33 +160,26 @@
 <script>
   let inactivityTimeout;
 
-function startInactivityTimer() {
-  clearTimeout(inactivityTimeout);
-  inactivityTimeout = setTimeout(() => {
-    localStorage.setItem("bloqueado", "true");
-    location.reload(); // Al recargar, pediremos el PIN antes de continuar
-  }, 2 * 60 * 1000); // 2 minutos
-}
+  function startInactivityTimer() {
+    clearTimeout(inactivityTimeout);
+    inactivityTimeout = setTimeout(async () => {
+      alert("Sesión cerrada por inactividad");
 
+      // Cierra sesión de Firebase
+      const { getAuth, signOut } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+      const auth = getAuth();
+      await signOut(auth);
+
+      // Redirige al login
+      window.location.href = "login.html";
+    }, 2 * 60 * 1000); // 2 minutos
+  }
 
   ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'].forEach(event => {
     document.addEventListener(event, startInactivityTimer, false);
   });
 
   startInactivityTimer(); // Iniciar temporizador al cargar
-</script>
-
-<script>
-  if (localStorage.getItem("bloqueado") === "true") {
-    const pinCorrecto = "1982"; // Puedes cambiar este PIN si lo deseas
-    const ingreso = prompt("🔒 Sesión bloqueada por inactividad.\nIngresa tu PIN para continuar:");
-    if (ingreso === pinCorrecto) {
-      localStorage.removeItem("bloqueado");
-    } else {
-      alert("❌ PIN incorrecto. Volviendo al login.");
-      window.location.href = "login.html";
-    }
-  }
 </script>
 
 
@@ -196,9 +189,6 @@ function startInactivityTimer() {
     <button onclick="showSection('menu')">Menu Principal</button>
     <button onclick="showSection('activas')">Ver Notas Activas</button>
     <button onclick="showSection('archivadas')">Ver Archivadas</button>
-  <button onclick="window.open('InvPDD.html', '_blank')">📦 Inventarios</button>
-<button onclick="abrirPedidos()">📝 Toma de Pedidos</button>
-
     <button onclick="logout()">Cerrar sesión</button>
   </div>
   <div id="menu" class="section">
@@ -237,54 +227,13 @@ function startInactivityTimer() {
       appId: "1:449665263510:web:b049e4c02babe203da1fb7"
     };
     const app = initializeApp(firebaseConfig);
-import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-const auth = getAuth(app);
-
-setPersistence(auth, browserLocalPersistence)
-  .then(() => {
+    const auth = getAuth(app);
     onAuthStateChanged(auth, (user) => {
       if (!user) {
         window.location.href = "login.html";
       }
     });
-  })
-  .catch((error) => {
-    console.error("Error al establecer persistencia en index.html:", error);
-  });
   </script>
-<script type="module">
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-  const auth = getAuth(); // Asegura que esté dentro del mismo módulo
-
-  window.abrirPedidos = () => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        window.location.href = 'pedidos.html';
-      } else {
-        alert("Debes iniciar sesión primero.");
-      }
-    });
-  };
-</script>
-
-<script type="module">
-  import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-
-  const auth = getAuth();
-
-  window.logout = () => {
-    signOut(auth)
-      .then(() => {
-        localStorage.setItem("bloqueado", "false"); // Limpia seguridad local si usas PIN
-        window.location.href = "login.html"; // Redirige al login
-      })
-      .catch((error) => {
-        alert("❌ Error al cerrar sesión: " + error.message);
-      });
-  };
-</script>
-
-
+  <script type="module" src="unificado.js"></script>
 </body>
 </html>
