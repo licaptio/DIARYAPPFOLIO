@@ -48,36 +48,6 @@
   </style>
 </head>
 
-<!-- ✅ Firebase SDKs versión clásica compatibles con GitHub Pages -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBbWF230CSuc_RyX2nZVZxFPGkPrQsQXxE",
-    authDomain: "notasfoliador.firebaseapp.com",
-    projectId: "notasfoliador",
-    storageBucket: "notasfoliador.appspot.com",
-    messagingSenderId: "449665263510",
-    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
-  };
-
-  // ✅ Inicializa Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // ✅ Verifica si el usuario está logueado
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (!user) {
-      alert("🔒 Debes iniciar sesión para usar esta función.");
-      window.location.href = "login.html";
-    }
-  });
-</script>
-
-
-
 <body>
   <h1>Toma de Pedidos</h1>
 
@@ -93,7 +63,8 @@
     <h2>Capturar Pedido</h2>
     <input type="text" id="titulo" placeholder="Título">
     <textarea id="descripcion" rows="4" placeholder="Descripción"></textarea>
-    <button onclick="guardarNota()">Guardar</button>
+<button onclick="obtenerFolioYGuardar()">Guardar</button>
+
   </div>
 
   <!-- Sección de pedidos guardados -->
@@ -177,9 +148,9 @@ function mostrarNotas() {
 
         const div = document.createElement("div");
         div.className = "note";
-        div.innerHTML = `
-          <strong>${nota.titulo}</strong><br>
-          <p>${nota.descripcion}</p>
+div.innerHTML = `
+  <strong>Folio ${nota.folio ?? 'N/A'} - ${nota.titulo}</strong><br>
+  <p>${nota.descripcion}</p>
           <button onclick="editarNota('${id}', '${nota.titulo}', \`${nota.descripcion.replace(/`/g, "\\`")}\`)">Editar</button>
           <button onclick="eliminarNota('${id}')">Eliminar</button>
           <button onclick="archivarNota('${id}', true)">Archivar</button>
@@ -277,16 +248,71 @@ function archivarNota(id, estado) {
     mostrarArchivados();
   </script>
 
+<!-- ✅ SDKs de Firebase al final para asegurar orden correcto -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+
 <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbWF230CSuc_RyX2nZVZxFPGkPrQsQXxE",
+    authDomain: "notasfoliador.firebaseapp.com",
+    projectId: "notasfoliador",
+    storageBucket: "notasfoliador.appspot.com",
+    messagingSenderId: "449665263510",
+    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+  };
+
+  // Inicializa Firebase correctamente
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Autenticación segura
   firebase.auth().onAuthStateChanged(function(user) {
     if (!user) {
       alert("🔒 Debes iniciar sesión para usar esta función.");
-      window.location.href = "login.html"; // O redirige a tu login
+      window.location.href = "login.html";
     }
   });
+
+function obtenerFolioYGuardar() {
+  const titulo = document.getElementById("titulo").value.trim();
+  const descripcion = document.getElementById("descripcion").value.trim();
+  if (!titulo || !descripcion) return alert("Llena ambos campos");
+
+  const folioRef = db.collection("config").doc("folio");
+
+  db.runTransaction((transaction) => {
+    return transaction.get(folioRef).then((doc) => {
+      let folioActual = 1;
+      if (doc.exists) {
+        folioActual = doc.data().valor + 1;
+      }
+
+      transaction.set(folioRef, { valor: folioActual });
+
+      const datos = {
+        titulo,
+        descripcion,
+        fecha: new Date().toISOString(),
+        folio: folioActual,
+        archivado: false
+      };
+
+      return db.collection("pedidosAppWeb").add(datos);
+    });
+  }).then(() => {
+    alert("Pedido guardado con folio");
+    document.getElementById("titulo").value = "";
+    document.getElementById("descripcion").value = "";
+    mostrarNotas();
+    mostrarArchivados();
+    mostrarSeccion('resumen');
+  }).catch((error) => {
+    console.error("Error al guardar con folio:", error);
+    alert("Hubo un error al guardar el pedido con folio.");
+  });
+}
 </script>
-
-
 </body>
 </html>
