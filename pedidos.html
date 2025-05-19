@@ -49,6 +49,11 @@
 </head>
 
 <body>
+
+<div id="loading" style="text-align:center; font-weight:bold; padding: 40px;">
+  ⏳ Cargando sesión...
+</div>
+
   <h1>Toma de Pedidos</h1>
 
   <!-- Menú para alternar secciones -->
@@ -232,8 +237,9 @@ setPersistence(auth, browserLocalPersistence)
         alert("🔒 Debes iniciar sesión para usar esta función.");
         window.location.href = "login.html";
       } else {
-        document.body.classList.remove("oculto");
-        window.db = db;
+document.body.classList.remove("oculto");
+document.getElementById("loading").style.display = "none";
+window.db = db;
       }
     });
   })
@@ -246,4 +252,7 @@ setPersistence(auth, browserLocalPersistence)
 
 
 </body>
+
+
+
 </html>
