@@ -103,6 +103,24 @@
   </style>
 </head>
 <body>
+<div style="text-align:center; margin-bottom: 20px;">
+  <label for="selectorCategoria">Selecciona una categoría:</label>
+  <select id="selectorCategoria">
+    <option value="">-- Selecciona --</option>
+    <option value="AZUCAR">AZUCAR</option>
+    <option value="CHILE Y HOJA">CHILE Y HOJA</option>
+    <option value="HIGIENICOS">HIGIENICOS</option>
+    <option value="Cacahuates FUNCIONAL DE EJEMPLO 150525">Cacahuates FUNCIONAL DE EJEMPLO 150525</option>
+    <option value="Embalaje y Más">Embalaje y Más</option>
+    <option value="CERILLOS">CERILLOS</option>
+    <option value="PAPEL ALUMINIO">PAPEL ALUMINIO</option>
+    <option value="CIERVO">CIERVO</option>
+  </select>
+</div>
+
+
+
+
   <h1>Inventario de Productos</h1>
   <div class="main-wrapper">
     <div class="container">
@@ -115,43 +133,29 @@
 <table>
 <thead>
 <tr>
-<th>Tamaño</th>
-<th>Cantidad</th>
-<th>STOCK</th>
-</tr>
-</thead>
-<tbody>
-<tr><td>AZUCAR MORENA 25</td><td><input min="0" type="number"/></td><td>100</td></tr>
-<tr><td>AZUCAR BLANCA 25</td><td><input min="0" type="number"/></td><td>20</td></tr>
-<tr><td>GLASS 6X</td><td><input min="0" type="number"/></td><td>5</td></tr>
-<tr><td>FECULA MAIZ</td><td><input min="0" type="number"/></td><td>5</td></tr>
-<tr><td>MOSCABADA</td><td><input min="0" type="number"/></td><td>2</td></tr>
-<tr><td>FARDO ESTANDAR</td><td><input min="0" type="number"/></td><td>30</td></tr>
-<tr><td>GLUCOSA 19LTS 26K</td><td><input min="0" type="number"/></td><td>4</td></tr>
-<tr><td>HARINA MAYRAN</td><td><input min="0" type="number"/></td><td>50</td></tr>
-<tr><td>HARINA INTEGRAL</td><td><input min="0" type="number"/></td><td>2</td></tr>
-</tbody>
-</table>
-</div>
-<div class="category">
-<h2>COLORANTE VEGETAL</h2>
-<button class="export-btn" onclick="exportToTxt('COLORANTE VEGETAL')">Exportar TXT</button>
-<button class="export-btn" style="top: 45px;" onclick="clearCategory(this)">Limpiar</button>
-<table>
-<thead>
-<tr>
 <th>Producto</th>
 <th>Cantidad</th>
+<th>STOCK</th>
+<th>Pedido</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>NARANJA ROJIZO</td><td><input min="0" type="number"/></td></tr>
-<tr><td>AMARILLO HUEVO</td><td><input min="0" type="number"/></td></tr>
+<tr><td>AZUCAR MORENA 25</td><td><input min="0" type="number"/></td><td>100</td><td><input min="0" type="number"/></td></tr>
+<tr><td>AZUCAR BLANCA 25</td><td><input min="0" type="number"/></td><td>20</td><td><input min="0" type="number"/></td></tr>
+<tr><td>GLASS 6X</td><td><input min="0" type="number"/></td><td>5</td><td><input min="0" type="number"/></td></tr>
+<tr><td>FECULA MAIZ</td><td><input min="0" type="number"/></td><td>5</td><td><input min="0" type="number"/></td></tr>
+<tr><td>MOSCABADA</td><td><input min="0" type="number"/></td><td>2</td><td><input min="0" type="number"/></td></tr>
+<tr><td>FARDO ESTANDAR C10</td><td><input min="0" type="number"/></td><td>30</td><td><input min="0" type="number"/></td></tr>
+<tr><td>GLUCOSA 19LTS 26K</td><td><input min="0" type="number"/></td><td>4</td><td><input min="0" type="number"/></td></tr>
+<tr><td>HARINA MAYRAN</td><td><input min="0" type="number"/></td><td>50</td><td><input min="0" type="number"/></td></tr>
+<tr><td>HARINA INTEGRAL</td><td><input min="0" type="number"/></td><td>2</td><td><input min="0" type="number"/></td></tr>
+<tr><td>NARANJA ROJIZO</td><td><input min="0" type="number"/></td><td>2</td><td><input min="0" type="number"/></td></tr>
+<tr><td>AMARILLO HUEVO</td><td><input min="0" type="number"/></td><td>3</td><td><input min="0" type="number"/></td></tr>
 </tbody>
 </table>
 </div>
 <div class="category">
-<h2>CHIELE Y HOJA</h2>
+<h2>CHILE Y HOJA</h2>
 <button class="export-btn" onclick="exportToTxt('CHIELE Y HOJA')">Exportar TXT</button>
 <button class="export-btn" style="top: 45px;" onclick="clearCategory(this)">Limpiar</button>
 <table>
@@ -159,11 +163,13 @@
 <tr>
 <th>Producto</th>
 <th>Cantidad</th>
+<th>STOCK</th>
+<th>Pedido</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>HOJA DE TAMAL</td><td><input min="0" type="number"/></td></tr>
-<tr><td>CHILE JAPONES</td><td><input min="0" type="number"/></td></tr>
+<tr><td>HOJA DE TAMAL</td><td><input min="0" type="number"/></td><td>10</td><td><input min="0" type="number"/></td></tr>
+<tr><td>CHILE JAPONES</td><td><input min="0" type="number"/></td><td>2</td><td><input min="0" type="number"/></td></tr>
 </tbody>
 </table>
 </div>
@@ -198,7 +204,6 @@
   <button class="export-btn" onclick="clearCategory(this)">Limpiar</button>
   <button class="export-btn" onclick="exportCacahuatesToImage()">Exportar JPG</button>
 </div>
-
 <thead>
 <tr>
 <th>SKU</th>
@@ -228,29 +233,31 @@
 <table>
 <thead>
 <tr>
-<th>Producto</th>
-<th>Cantidad</th>
+<th>SKU</th>
+<th>INV</th>
+<th>STO</th>
+<th>pedido</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>EMPLAYES /4</td><td><input min="0" type="number"/></td></tr>
-<tr><td>REV CORTO</td><td><input min="0" type="number"/></td></tr>
-<tr><td>REV LARGO</td><td><input min="0" type="number"/></td></tr>
-<tr><td>10X20 VALDEZ</td><td><input min="0" type="number"/></td></tr>
-<tr><td>8X26 GOURMET</td><td><input min="0" type="number"/></td></tr>
-<tr><td>90X120BD</td><td><input min="0" type="number"/></td></tr>
-<tr><td>70X90BD</td><td><input min="0" type="number"/></td></tr>
-<tr><td>50X70BD</td><td><input min="0" type="number"/></td></tr>
-<tr><td>BOLSA 55X55</td><td><input min="0" type="number"/></td></tr>
-<tr><td>BOLSA 55X65</td><td><input min="0" type="number"/></td></tr>
-<tr><td>VIVERO CHICA</td><td><input min="0" type="number"/></td></tr>
-<tr><td>VIVERO MEDIANA</td><td><input min="0" type="number"/></td></tr>
-<tr><td>VIVERO GRANDE</td><td><input min="0" type="number"/></td></tr>
-<tr><td>ROLLOS NEGROS</td><td><input min="0" type="number"/></td></tr>
-<tr><td>ROLLOS TRASPARENTE</td><td><input min="0" type="number"/></td></tr>
-<tr><td>VASO DART 12</td><td><input min="0" type="number"/></td></tr>
-<tr><td>TAPA DART 12</td><td><input min="0" type="number"/></td></tr>
-<tr><td>TAPA DART 20JL</td><td><input min="0" type="number"/></td></tr>
+<tr><td>EMPLAYES C4</td><td><input type="number" min="0"/></td><td>300</td><td><input type="number" min="0"/></td></tr>
+<tr><td>PAP REV CORTO 25</td><td><input type="number" min="0"/></td><td>100</td><td><input type="number" min="0"/></td></tr>
+<tr><td>PAP REV LARGO 25</td><td><input type="number" min="0"/></td><td>30</td><td><input type="number" min="0"/></td></tr>
+<tr><td>10X20 BOYO CIENTOS</td><td><input type="number" min="0"/></td><td>20</td><td><input type="number" min="0"/></td></tr>
+<tr><td>8X26 GOURMET</td><td><input type="number" min="0"/></td><td>2</td><td><input type="number" min="0"/></td></tr>
+<tr><td>90X120BD</td><td><input type="number" min="0"/></td><td>60</td><td><input type="number" min="0"/></td></tr>
+<tr><td>70X90BD</td><td><input type="number" min="0"/></td><td>40</td><td><input type="number" min="0"/></td></tr>
+<tr><td>50X70BD</td><td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>CARTON55X65BD</td><td><input type="number" min="0"/></td><td>5</td><td><input type="number" min="0"/></td></tr>
+<tr><td>CARTON65X65BD</td><td><input type="number" min="0"/></td><td>5</td><td><input type="number" min="0"/></td></tr>
+<tr><td>VIVERO CHICA</td><td><input type="number" min="0"/></td><td>5</td><td><input type="number" min="0"/></td></tr>
+<tr><td>VIVERO MEDIANA</td><td><input type="number" min="0"/></td><td>5</td><td><input type="number" min="0"/></td></tr>
+<tr><td>VIVERO GRANDE<td><input type="number" min="0"/></td><td>5</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ROLLOS NEGROS<td><input type="number" min="0"/></td><td>6</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ROLLO TRANSPARENTE<td><input type="number" min="0"/></td><td>6</td><td><input type="number" min="0"/></td></tr>
+<tr><td>VASO DART 12<td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>TAPA DART 12<td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>TAPA DART 20JL<td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
 </tbody>
 </table>
 </div>
@@ -261,16 +268,18 @@
 <table>
 <thead>
 <tr>
-<th>Producto</th>
-<th>Cantidad</th>
+<th>SKU</th>
+<th>INV</th>
+<th>STO</th>
+<th>pedido</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>CERILLO MAYA 10/50</td><td><input min="0" type="number"/></td></tr>
-<tr><td>CLASICO 50</td><td><input min="0" type="number"/></td></tr>
-<tr><td>MANOLA 50</td><td><input min="0" type="number"/></td></tr>
-<tr><td>FLAMA 115</td><td><input min="0" type="number"/></td></tr>
-<tr><td>FLAMA 200</td><td><input min="0" type="number"/></td></tr>
+<tr><td>CERILLOS MAYA 10/50</td><td><input type="number" min="0"/></td><td>20</td><td><input type="number" min="0"/></td></tr>
+<tr><td>CLASICOS 50</td><td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>MANOLA 50</td><td><input type="number" min="0"/></td><td>5</td><td><input type="number" min="0"/></td></tr>
+<tr><td>FLAMA 115</td><td><input type="number" min="0"/></td><td>3</td><td><input type="number" min="0"/></td></tr>
+<tr><td>FLAMA 200</td><td><input type="number" min="0"/></td><td>3</td><td><input type="number" min="0"/></td></tr>
 </tbody>
 </table>
 </div>
@@ -281,24 +290,25 @@
 <table>
 <thead>
 <tr>
-<th>Producto</th>
-<th>Cantidad</th>
-<th>STOCK</th>
+<th>SKU</th>
+<th>INV</th>
+<th>STO</th>
+<th>pedido</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>PAPEL ALUMINIO 5 ALUMAT</td><td><input min="0" type="number"/></td><td>30</td></tr>
-<tr><td>PAPEL ALUMINIO 7 ALUMAT</td><td><input min="0" type="number"/></td><td>30</td></tr>
-<tr><td>PAPEL ALUMINIO 10 ALUMAT</td><td><input min="0" type="number"/></td><td>10</td></tr>
-<tr><td>PAPEL ALUMINIO 50 NARANJA</td><td><input min="0" type="number"/></td><td>10</td></tr>
-<tr><td>PAPEL ALUMINIO 500GR C12</td><td><input min="0" type="number"/></td><td>4</td></tr>
-<tr><td>PAPEL ALUMINIO 3 KG</td><td><input min="0" type="number"/></td><td>4</td></tr>
-<tr><td>PAPEL PARA ESTUFA</td><td><input min="0" type="number"/></td><td>20</td></tr>
-<tr><td>PAPEL ALUMINIO 5 ALUMSTAR</td><td><input min="0" type="number"/></td><td>10</td></tr>
-<tr><td>PAPEL ALUMINIO 7 ALUMSTAR</td><td><input min="0" type="number"/></td><td>10</td></tr>
-<tr><td>PAPEL ALUMINIO 10 ALUMSTAR</td><td><input min="0" type="number"/></td><td>10</td></tr>
-<tr><td>PAPEL ENCERADO 10</td><td><input min="0" type="number"/></td><td>10</td></tr>
-<tr><td>PAPEL ENCERADO 20</td><td><input min="0" type="number"/></td><td>10</td></tr>
+<tr><td>ALUMAT 5</td><td><input type="number" min="0"/></td><td>30</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ALUMAT 7</td><td><input type="number" min="0"/></td><td>30</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ALUMAT 10</td><td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ALUMAT 50 ORANGE</td><td><input type="number" min="0"/></td><td>20</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ALUMINIO 500 C12</td><td><input type="number" min="0"/></td><td>3</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ALUMINIO 3K</td><td><input type="number" min="0"/></td><td>3</td><td><input type="number" min="0"/></td></tr>
+<tr><td>PAPEL ESTUFA</td><td><input type="number" min="0"/></td><td>40</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ALUMSTAR 5</td><td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ALUMSTAR 7</td><td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ALUMSTAR 10</td><td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ENCERADO10</td><td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
+<tr><td>ENCERADO20</td><td><input type="number" min="0"/></td><td>10</td><td><input type="number" min="0"/></td></tr>
 </tbody>
 </table>
 </div>
@@ -449,6 +459,21 @@ function exportCacahuatesToImage() {
   });
 }
 </script>
+<script>
+  // Ocultar todas las categorías al inicio
+  document.querySelectorAll('.category').forEach(c => c.style.display = 'none');
+
+  document.getElementById('selectorCategoria').addEventListener('change', function () {
+    const selected = this.value;
+
+    // Ocultar todas
+    document.querySelectorAll('.category').forEach(c => {
+      const title = c.querySelector('h2').textContent.trim();
+      c.style.display = (title === selected) ? 'flex' : 'none';
+    });
+  });
+</script>
+
 
 </body>
 </html>

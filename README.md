@@ -1,31 +1,49 @@
 # Notas Firebase App 📝
 
-Aplicación web para tomar y gestionar notas personales con autenticación, foliador automático y control de acceso basado en sesión.
+Aplicación web para tomar y gestionar notas personales con autenticación Firebase, foliador automático, control de acceso, y ahora con bloqueo inteligente por inactividad usando PIN local.
+
+---
 
 ## 🔧 Tecnologías
 - HTML + JavaScript
 - Firebase Authentication
-- Firebase Firestore (Base de datos)
+- Firebase Firestore
 - GitHub Pages (Hosting)
 
+---
+
 ## 🚀 Funcionalidades principales
-- Registro e inicio de sesión con correo y contraseña
-- Creación, edición, archivado y eliminación de notas
-- Foliador automático (número único por nota, secuencial)
-- Redirección automática si el usuario no está logueado
-- Control de acceso seguro (Firestore solo permite usuarios autenticados)
-- Cierre de sesión desde la interfaz
-- Visualización de notas activas y archivadas
-- Vista detallada de cada nota individual (verNota.html)
+
+### 📝 Gestión de notas
+- Crear, editar, archivar y eliminar notas.
+- Foliador automático (secuencial) por nota.
+- Vista detallada por nota (`verNota.html`).
+- Visualización separada: Notas activas y archivadas.
+
+### 🔐 Autenticación y seguridad
+- Inicio de sesión con correo y contraseña usando Firebase Auth.
+- Protección de acceso: solo usuarios autenticados pueden ver o modificar notas.
+- Cierre de sesión manual desde la interfaz.
+
+### 🛡️ Bloqueo automático por inactividad
+- A los 2 minutos sin actividad, se activa un **bloqueo por PIN local**, sin cerrar sesión.
+- El PIN por defecto es `"1982"` y se puede cambiar fácilmente en el código.
+- El PIN se solicita mediante `prompt()` al recargar si está bloqueado (`localStorage.bloqueado = "true"`).
+- Si el PIN es incorrecto, se redirige al login para evitar accesos no autorizados.
+
+### 🌐 Compatibilidad y despliegue
+- Optimizado para navegación móvil y escritorio.
+- Ideal para usarlo como aplicación personal desde el navegador móvil.
+- Puede alojarse en GitHub Pages o cualquier hosting estático.
+
+---
 
 ## 📁 Firebase
-- Colección: `notas`
-- Documento de control para foliador: `config/folio`
-- Reglas de seguridad: Solo usuarios autenticados pueden acceder a los documentos
 
-## 🔐 Seguridad
-Las reglas activas en Firestore permiten únicamente el acceso a usuarios autenticados:
-
+- **Colección de notas:** `notas`
+- **Documento de foliador:** `config/folio`
+- **Autenticación:** `Firebase Authentication`
+- **Seguridad de Firestore:**
 ```js
 rules_version = '2';
 service cloud.firestore {
@@ -38,7 +56,3 @@ service cloud.firestore {
     }
   }
 }
-```
-
-## 🌐 Despliegue
-La aplicación puede ser alojada en GitHub Pages o cualquier hosting estático compatible.
