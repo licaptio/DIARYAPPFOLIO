@@ -197,9 +197,7 @@ function startInactivityTimer() {
     <button onclick="showSection('activas')">Ver Notas Activas</button>
     <button onclick="showSection('archivadas')">Ver Archivadas</button>
   <button onclick="window.open('InvPDD.html', '_blank')">📦 Inventarios</button>
-<a href="pedidos.html" target="_blank">
-  <button>📝 Toma de Pedidos</button>
-</a>
+<button onclick="abrirPedidos()">📝 Toma de Pedidos</button>
 
     <button onclick="logout()">Cerrar sesión</button>
   </div>
@@ -247,5 +245,22 @@ function startInactivityTimer() {
     });
   </script>
   <script type="module" src="unificado.js"></script>
+
+<script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+  const auth = getAuth();
+  window.abrirPedidos = () => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        window.open('pedidos.html', '_blank');
+      } else {
+        alert("Debes iniciar sesión primero.");
+      }
+    });
+  }
+</script>
+
+
+
 </body>
 </html>

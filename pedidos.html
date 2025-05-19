@@ -83,54 +83,6 @@
     let contadorFolio = localStorage.getItem('contadorFolio') ? parseInt(localStorage.getItem('contadorFolio')) : 1;
     let editandoIndex = null;
 
-function guardarNota() {
-  const titulo = document.getElementById("titulo").value.trim();
-  const descripcion = document.getElementById("descripcion").value.trim();
-  if (!titulo || !descripcion) return alert("Llena ambos campos");
-
-  const datos = {
-    titulo,
-    descripcion,
-    fecha: new Date().toISOString()
-  };
-
-  if (editandoId) {
-    // Actualizar nota existente
-    db.collection("pedidosAppWeb")
-      .doc(editandoId)
-      .update(datos)
-      .then(() => {
-        alert("Pedido actualizado");
-        editandoId = null;
-        document.getElementById("titulo").value = "";
-        document.getElementById("descripcion").value = "";
-        mostrarNotas();
-        mostrarArchivados();
-        mostrarSeccion('resumen');
-      })
-      .catch((error) => {
-        console.error("Error al actualizar: ", error);
-        alert("No se pudo actualizar el pedido.");
-      });
-  } else {
-    // Guardar nuevo pedido
-    datos.archivado = false;
-    db.collection("pedidosAppWeb")
-      .add(datos)
-      .then(() => {
-        alert("Pedido guardado en Firebase");
-        document.getElementById("titulo").value = "";
-        document.getElementById("descripcion").value = "";
-        mostrarNotas();
-        mostrarArchivados();
-        mostrarSeccion('resumen');
-      })
-      .catch((error) => {
-        console.error("Error al guardar: ", error);
-        alert("Hubo un error al guardar el pedido.");
-      });
-  }
-}
 
 
 function mostrarNotas() {
@@ -314,5 +266,9 @@ function obtenerFolioYGuardar() {
   });
 }
 </script>
+
+
+
+
 </body>
 </html>
