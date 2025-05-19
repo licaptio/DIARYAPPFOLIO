@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Toma de Pedidos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .menu {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .menu button {
+      padding: 10px 20px;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+    .section {
+      display: none;
+      max-width: 600px;
+      margin: auto;
+    }
+    .active {
+      display: block;
+    }
+    input, textarea {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+    }
+    button {
+      padding: 10px;
+      margin: 2px;
+    }
+    .note {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    .archived {
+      background-color: #eee;
+    }
+  </style>
+</head>
+
+<!-- Firebase SDKs (versión clásica) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+
+<script>
+  // ✅ Tu configuración real
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbWF230CSuc_RyX2nZVZxFPGkPrQsQXxE",
+    authDomain: "notasfoliador.firebaseapp.com",
+    projectId: "notasfoliador",
+    storageBucket: "notasfoliador.appspot.com",
+    messagingSenderId: "449665263510",
+    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+  };
+
+  // ✅ Inicializa Firebase y Firestore
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
+
+
+<body>
+  <h1>Toma de Pedidos</h1>
+
+  <!-- Menú para alternar secciones -->
+  <div class="menu">
+    <button onclick="mostrarSeccion('captura')">Capturar Pedido</button>
+    <button onclick="mostrarSeccion('resumen')">Pedidos Guardados</button>
+    <button onclick="mostrarSeccion('archivo')">Archivo</button>
+  </div>
+
+  <!-- Sección de captura -->
+  <div id="captura" class="section active">
+    <h2>Capturar Pedido</h2>
+    <input type="text" id="titulo" placeholder="Título">
+    <textarea id="descripcion" rows="4" placeholder="Descripción"></textarea>
+    <button onclick="guardarNota()">Guardar</button>
+  </div>
+
+  <!-- Sección de pedidos guardados -->
+  <div id="resumen" class="section">
+    <h2>Pedidos Guardados</h2>
+    <div id="listaNotas"></div>
+  </div>
+
+  <!-- Sección de archivo -->
+  <div id="archivo" class="section">
+    <h2>Archivo</h2>
+    <div id="listaArchivados"></div>
+  </div>
+
+  <script>
+    let contadorFolio = localStorage.getItem('contadorFolio') ? parseInt(localStorage.getItem('contadorFolio')) : 1;
+    let editandoIndex = null;
+
+function guardarNota() {
+  const titulo = document.getElementById("titulo").value.trim();
+  const descripcion = document.getElementById("descripcion").value.trim();
+  if (!titulo || !descripcion) return alert("Llena ambos campos");
+
+  const datos = {
+    titulo,
+    descripcion,
+    fecha: new Date().toISOString()
+  };
+
+  if (editandoId) {
+    // Actualizar nota existente
+    db.collection("pedidosAppWeb")
+      .doc(editandoId)
+      .update(datos)
+      .then(() => {
+        alert("Pedido actualizado");
+        editandoId = null;
+        document.getElementById("titulo").value = "";
+        document.getElementById("descripcion").value = "";
+        mostrarNotas();
+        mostrarArchivados();
+        mostrarSeccion('resumen');
+      })
+      .catch((error) => {
+        console.error("Error al actualizar: ", error);
+        alert("No se pudo actualizar el pedido.");
+      });
+  } else {
+    // Guardar nuevo pedido
+    datos.archivado = false;
+    db.collection("pedidosAppWeb")
+      .add(datos)
+      .then(() => {
+        alert("Pedido guardado en Firebase");
+        document.getElementById("titulo").value = "";
+        document.getElementById("descripcion").value = "";
+        mostrarNotas();
+        mostrarArchivados();
+        mostrarSeccion('resumen');
+      })
+      .catch((error) => {
+        console.error("Error al guardar: ", error);
+        alert("Hubo un error al guardar el pedido.");
+      });
+  }
+}
+
+
+function mostrarNotas() {
+  const contenedor = document.getElementById("listaNotas");
+  contenedor.innerHTML = "";
+
+  db.collection("pedidosAppWeb")
+    .where("archivado", "==", false)
+    .orderBy("fecha", "desc")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const nota = doc.data();
+        const id = doc.id;
+
+        const div = document.createElement("div");
+        div.className = "note";
+        div.innerHTML = `
+          <strong>${nota.titulo}</strong><br>
+          <p>${nota.descripcion}</p>
+          <button onclick="editarNota('${id}', '${nota.titulo}', \`${nota.descripcion.replace(/`/g, "\\`")}\`)">Editar</button>
+          <button onclick="eliminarNota('${id}')">Eliminar</button>
+          <button onclick="archivarNota('${id}', true)">Archivar</button>
+        `;
+        contenedor.appendChild(div);
+      });
+    })
+    .catch((error) => {
+      console.error("Error al mostrar notas: ", error);
+    });
+}
+
+
+function mostrarArchivados() {
+  const contenedor = document.getElementById("listaArchivados");
+  contenedor.innerHTML = "";
+
+  db.collection("pedidosAppWeb")
+    .where("archivado", "==", true)
+    .orderBy("fecha", "desc")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const nota = doc.data();
+        const id = doc.id;
+
+        const div = document.createElement("div");
+        div.className = "note archived";
+        div.innerHTML = `
+          <strong>${nota.titulo}</strong><br>
+          <p>${nota.descripcion}</p>
+          <button onclick="archivarNota('${id}', false)">Desarchivar</button>
+          <button onclick="eliminarNota('${id}')">Eliminar</button>
+        `;
+        contenedor.appendChild(div);
+      });
+    })
+    .catch((error) => {
+      console.error("Error al mostrar archivados: ", error);
+    });
+}
+
+
+function eliminarNota(id) {
+  if (!confirm("¿Eliminar esta nota?")) return;
+
+  db.collection("pedidosAppWeb")
+    .doc(id)
+    .delete()
+    .then(() => {
+      alert("Pedido eliminado de Firebase");
+      mostrarNotas();
+      mostrarArchivados();
+    })
+    .catch((error) => {
+      console.error("Error al eliminar:", error);
+      alert("Hubo un error al eliminar el pedido.");
+    });
+}
+
+
+let editandoId = null; // ✅ Variable global para saber si estamos editando
+
+function editarNota(id, titulo, descripcion) {
+  document.getElementById("titulo").value = titulo;
+  document.getElementById("descripcion").value = descripcion;
+  editandoId = id;
+  mostrarSeccion('captura');
+}
+
+
+function archivarNota(id, estado) {
+  db.collection("pedidosAppWeb")
+    .doc(id)
+    .update({ archivado: estado })
+    .then(() => {
+      mostrarNotas();
+      mostrarArchivados();
+    })
+    .catch((error) => {
+      console.error("Error al archivar/desarchivar:", error);
+      alert("No se pudo cambiar el estado de archivo.");
+    });
+}
+
+    function mostrarSeccion(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id === "resumen") mostrarNotas();
+      if (id === "archivo") mostrarArchivados();
+    }
+
+    // Mostrar notas si ya hay algo al cargar
+    mostrarNotas();
+    mostrarArchivados();
+  </script>
+</body>
+</html>
