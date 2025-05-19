@@ -51,45 +51,163 @@
 <body>
   <h1>Toma de Pedidos</h1>
 
+  <!-- Menú para alternar secciones -->
   <div class="menu">
     <button onclick="mostrarSeccion('captura')">Capturar Pedido</button>
     <button onclick="mostrarSeccion('resumen')">Pedidos Guardados</button>
     <button onclick="mostrarSeccion('archivo')">Archivo</button>
   </div>
 
+  <!-- Sección de captura -->
   <div id="captura" class="section active">
     <h2>Capturar Pedido</h2>
     <input type="text" id="titulo" placeholder="Título">
     <textarea id="descripcion" rows="4" placeholder="Descripción"></textarea>
-    <button onclick="obtenerFolioYGuardar()">Guardar</button>
+<button onclick="obtenerFolioYGuardar()">Guardar</button>
+
   </div>
 
+  <!-- Sección de pedidos guardados -->
   <div id="resumen" class="section">
     <h2>Pedidos Guardados</h2>
     <div id="listaNotas"></div>
   </div>
 
+  <!-- Sección de archivo -->
   <div id="archivo" class="section">
     <h2>Archivo</h2>
     <div id="listaArchivados"></div>
   </div>
+ 
+  <script>
+    let editandoIndex = null;
+
+
+
+function mostrarNotas() {
+  const contenedor = document.getElementById("listaNotas");
+  contenedor.innerHTML = "";
+
+  db.collection("pedidosAppWeb")
+    .where("archivado", "==", false)
+    .orderBy("fecha", "desc")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const nota = doc.data();
+        const id = doc.id;
+
+        const div = document.createElement("div");
+        div.className = "note";
+div.innerHTML = `
+  <strong>Folio ${nota.folio ?? 'N/A'} - ${nota.titulo}</strong><br>
+  <p>${nota.descripcion}</p>
+          <button onclick="editarNota('${id}', '${nota.titulo}', \`${nota.descripcion.replace(/`/g, "\\`")}\`)">Editar</button>
+          <button onclick="eliminarNota('${id}')">Eliminar</button>
+          <button onclick="archivarNota('${id}', true)">Archivar</button>
+        `;
+        contenedor.appendChild(div);
+      });
+    })
+    .catch((error) => {
+      console.error("Error al mostrar notas: ", error);
+    });
+}
+
+
+function mostrarArchivados() {
+  const contenedor = document.getElementById("listaArchivados");
+  contenedor.innerHTML = "";
+
+  db.collection("pedidosAppWeb")
+    .where("archivado", "==", true)
+    .orderBy("fecha", "desc")
+    .get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        const nota = doc.data();
+        const id = doc.id;
+
+        const div = document.createElement("div");
+        div.className = "note archived";
+        div.innerHTML = `
+          <strong>${nota.titulo}</strong><br>
+          <p>${nota.descripcion}</p>
+          <button onclick="archivarNota('${id}', false)">Desarchivar</button>
+          <button onclick="eliminarNota('${id}')">Eliminar</button>
+        `;
+        contenedor.appendChild(div);
+      });
+    })
+    .catch((error) => {
+      console.error("Error al mostrar archivados: ", error);
+    });
+}
+
+
+function eliminarNota(id) {
+  if (!confirm("¿Eliminar esta nota?")) return;
+
+  db.collection("pedidosAppWeb")
+    .doc(id)
+    .delete()
+    .then(() => {
+      alert("Pedido eliminado de Firebase");
+      mostrarNotas();
+      mostrarArchivados();
+    })
+    .catch((error) => {
+      console.error("Error al eliminar:", error);
+      alert("Hubo un error al eliminar el pedido.");
+    });
+}
+
+
+let editandoId = null; // ✅ Variable global para saber si estamos editando
+
+function editarNota(id, titulo, descripcion) {
+  document.getElementById("titulo").value = titulo;
+  document.getElementById("descripcion").value = descripcion;
+  editandoId = id;
+  mostrarSeccion('captura');
+}
+
+
+function archivarNota(id, estado) {
+  db.collection("pedidosAppWeb")
+    .doc(id)
+    .update({ archivado: estado })
+    .then(() => {
+      mostrarNotas();
+      mostrarArchivados();
+    })
+    .catch((error) => {
+      console.error("Error al archivar/desarchivar:", error);
+      alert("No se pudo cambiar el estado de archivo.");
+    });
+}
+
+    function mostrarSeccion(id) {
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      if (id === "resumen") mostrarNotas();
+      if (id === "archivo") mostrarArchivados();
+    }
+
+    // Mostrar notas si ya hay algo al cargar
+    mostrarNotas();
+    mostrarArchivados();
+  </script>
+
+<style>
+  body.oculto {
+    visibility: hidden;
+  }
+</style>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import {
-    getFirestore,
-    collection,
-    doc,
-    getDoc,
-    runTransaction,
-    addDoc,
-    getDocs,
-    query,
-    where,
-    orderBy,
-    updateDoc,
-    deleteDoc
-  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+  import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
   const firebaseConfig = {
@@ -105,140 +223,19 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
+  document.body.classList.add("oculto");
+
   onAuthStateChanged(auth, (user) => {
     if (!user) {
       alert("🔒 Debes iniciar sesión para usar esta función.");
       window.location.href = "login.html";
+    } else {
+      document.body.classList.remove("oculto");
+      window.db = db;
     }
   });
-
-  let editandoId = null;
-
-  function mostrarNotas() {
-    const contenedor = document.getElementById("listaNotas");
-    contenedor.innerHTML = "";
-
-    const q = query(collection(db, "pedidosAppWeb"), where("archivado", "==", false), orderBy("fecha", "desc"));
-    getDocs(q).then((querySnapshot) => {
-      querySnapshot.forEach((docSnap) => {
-        const nota = docSnap.data();
-        const id = docSnap.id;
-
-        const div = document.createElement("div");
-        div.className = "note";
-        div.innerHTML = `
-          <strong>Folio ${nota.folio ?? 'N/A'} - ${nota.titulo}</strong><br>
-          <p>${nota.descripcion}</p>
-          <button onclick="editarNota('${id}', '${nota.titulo}', \`${nota.descripcion.replace(/`/g, "\`")}\`)">Editar</button>
-          <button onclick="eliminarNota('${id}')">Eliminar</button>
-          <button onclick="archivarNota('${id}', true)">Archivar</button>
-        `;
-        contenedor.appendChild(div);
-      });
-    }).catch((error) => {
-      console.error("Error al mostrar notas: ", error);
-    });
-  }
-
-  function mostrarArchivados() {
-    const contenedor = document.getElementById("listaArchivados");
-    contenedor.innerHTML = "";
-
-    const q = query(collection(db, "pedidosAppWeb"), where("archivado", "==", true), orderBy("fecha", "desc"));
-    getDocs(q).then((querySnapshot) => {
-      querySnapshot.forEach((docSnap) => {
-        const nota = docSnap.data();
-        const id = docSnap.id;
-
-        const div = document.createElement("div");
-        div.className = "note archived";
-        div.innerHTML = `
-          <strong>${nota.titulo}</strong><br>
-          <p>${nota.descripcion}</p>
-          <button onclick="archivarNota('${id}', false)">Desarchivar</button>
-          <button onclick="eliminarNota('${id}')">Eliminar</button>
-        `;
-        contenedor.appendChild(div);
-      });
-    }).catch((error) => {
-      console.error("Error al mostrar archivados: ", error);
-    });
-  }
-
-  function eliminarNota(id) {
-    if (!confirm("¿Eliminar esta nota?")) return;
-
-    deleteDoc(doc(db, "pedidosAppWeb", id)).then(() => {
-      alert("Pedido eliminado de Firebase");
-      mostrarNotas();
-      mostrarArchivados();
-    }).catch((error) => {
-      console.error("Error al eliminar:", error);
-      alert("Hubo un error al eliminar el pedido.");
-    });
-  }
-
-  function editarNota(id, titulo, descripcion) {
-    document.getElementById("titulo").value = titulo;
-    document.getElementById("descripcion").value = descripcion;
-    editandoId = id;
-    mostrarSeccion('captura');
-  }
-
-  function archivarNota(id, estado) {
-    updateDoc(doc(db, "pedidosAppWeb", id), { archivado: estado }).then(() => {
-      mostrarNotas();
-      mostrarArchivados();
-    }).catch((error) => {
-      console.error("Error al archivar/desarchivar:", error);
-      alert("No se pudo cambiar el estado de archivo.");
-    });
-  }
-
-  function obtenerFolioYGuardar() {
-    const titulo = document.getElementById("titulo").value.trim();
-    const descripcion = document.getElementById("descripcion").value.trim();
-    if (!titulo || !descripcion) return alert("Llena ambos campos");
-
-    const folioRef = doc(db, "config", "folio");
-
-    runTransaction(db, async (transaction) => {
-      const folioDoc = await transaction.get(folioRef);
-      let folioActual = folioDoc.exists() ? folioDoc.data().valor + 1 : 1;
-
-      transaction.set(folioRef, { valor: folioActual });
-
-      const datos = {
-        titulo,
-        descripcion,
-        fecha: new Date().toISOString(),
-        folio: folioActual,
-        archivado: false
-      };
-
-      await addDoc(collection(db, "pedidosAppWeb"), datos);
-    }).then(() => {
-      alert("Pedido guardado con folio");
-      document.getElementById("titulo").value = "";
-      document.getElementById("descripcion").value = "";
-      mostrarNotas();
-      mostrarArchivados();
-      mostrarSeccion('resumen');
-    }).catch((error) => {
-      console.error("Error al guardar con folio:", error);
-      alert("Hubo un error al guardar el pedido con folio.");
-    });
-  }
-
-  function mostrarSeccion(id) {
-    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    if (id === "resumen") mostrarNotas();
-    if (id === "archivo") mostrarArchivados();
-  }
-
-  mostrarNotas();
-  mostrarArchivados();
 </script>
+
+
 </body>
 </html>
