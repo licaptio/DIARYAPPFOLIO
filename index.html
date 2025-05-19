@@ -160,26 +160,33 @@
 <script>
   let inactivityTimeout;
 
-  function startInactivityTimer() {
-    clearTimeout(inactivityTimeout);
-    inactivityTimeout = setTimeout(async () => {
-      alert("Sesión cerrada por inactividad");
+function startInactivityTimer() {
+  clearTimeout(inactivityTimeout);
+  inactivityTimeout = setTimeout(() => {
+    localStorage.setItem("bloqueado", "true");
+    location.reload(); // Al recargar, pediremos el PIN antes de continuar
+  }, 2 * 60 * 1000); // 2 minutos
+}
 
-      // Cierra sesión de Firebase
-      const { getAuth, signOut } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-      const auth = getAuth();
-      await signOut(auth);
-
-      // Redirige al login
-      window.location.href = "login.html";
-    }, 2 * 60 * 1000); // 2 minutos
-  }
 
   ['mousemove', 'mousedown', 'keypress', 'touchstart', 'scroll'].forEach(event => {
     document.addEventListener(event, startInactivityTimer, false);
   });
 
   startInactivityTimer(); // Iniciar temporizador al cargar
+</script>
+
+<script>
+  if (localStorage.getItem("bloqueado") === "true") {
+    const pinCorrecto = "1982"; // Puedes cambiar este PIN si lo deseas
+    const ingreso = prompt("🔒 Sesión bloqueada por inactividad.\nIngresa tu PIN para continuar:");
+    if (ingreso === pinCorrecto) {
+      localStorage.removeItem("bloqueado");
+    } else {
+      alert("❌ PIN incorrecto. Volviendo al login.");
+      window.location.href = "login.html";
+    }
+  }
 </script>
 
 
