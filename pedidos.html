@@ -222,18 +222,26 @@ function archivarNota(id, estado) {
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
   const auth = getAuth(app);
+import { setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-  document.body.classList.add("oculto");
-
-  onAuthStateChanged(auth, (user) => {
-    if (!user) {
-      alert("🔒 Debes iniciar sesión para usar esta función.");
-      window.location.href = "login.html";
-    } else {
-      document.body.classList.remove("oculto");
-      window.db = db;
-    }
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    document.body.classList.add("oculto");
+    onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        alert("🔒 Debes iniciar sesión para usar esta función.");
+        window.location.href = "login.html";
+      } else {
+        document.body.classList.remove("oculto");
+        window.db = db;
+      }
+    });
+  })
+  .catch((error) => {
+    console.error("Error al establecer persistencia:", error);
   });
+
+
 </script>
 
 
