@@ -268,5 +268,17 @@ function archivarNota(id, estado) {
     mostrarNotas();
     mostrarArchivados();
   </script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+<script>
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) {
+      alert("🔒 Debes iniciar sesión para usar esta función.");
+      window.location.href = "login.html"; // O redirige a tu login
+    }
+  });
+</script>
+
+
 </body>
 </html>
