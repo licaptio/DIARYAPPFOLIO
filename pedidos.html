@@ -79,8 +79,75 @@
     <div id="listaArchivados"></div>
   </div>
 
+
+<!-- ✅ SDKs de Firebase al final para asegurar orden correcto -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbWF230CSuc_RyX2nZVZxFPGkPrQsQXxE",
+    authDomain: "notasfoliador.firebaseapp.com",
+    projectId: "notasfoliador",
+    storageBucket: "notasfoliador.appspot.com",
+    messagingSenderId: "449665263510",
+    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+  };
+
+  // Inicializa Firebase correctamente
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // Autenticación segura
+  firebase.auth().onAuthStateChanged(function(user) {
+    if (!user) {
+      alert("🔒 Debes iniciar sesión para usar esta función.");
+      window.location.href = "login.html";
+    }
+  });
+
+function obtenerFolioYGuardar() {
+  const titulo = document.getElementById("titulo").value.trim();
+  const descripcion = document.getElementById("descripcion").value.trim();
+  if (!titulo || !descripcion) return alert("Llena ambos campos");
+
+  const folioRef = db.collection("config").doc("folio");
+
+  db.runTransaction((transaction) => {
+    return transaction.get(folioRef).then((doc) => {
+      let folioActual = 1;
+      if (doc.exists) {
+        folioActual = doc.data().valor + 1;
+      }
+
+      transaction.set(folioRef, { valor: folioActual });
+
+      const datos = {
+        titulo,
+        descripcion,
+        fecha: new Date().toISOString(),
+        folio: folioActual,
+        archivado: false
+      };
+
+      return db.collection("pedidosAppWeb").add(datos);
+    });
+  }).then(() => {
+    alert("Pedido guardado con folio");
+    document.getElementById("titulo").value = "";
+    document.getElementById("descripcion").value = "";
+    mostrarNotas();
+    mostrarArchivados();
+    mostrarSeccion('resumen');
+  }).catch((error) => {
+    console.error("Error al guardar con folio:", error);
+    alert("Hubo un error al guardar el pedido con folio.");
+  });
+}
+</script>
+
   <script>
-    let contadorFolio = localStorage.getItem('contadorFolio') ? parseInt(localStorage.getItem('contadorFolio')) : 1;
     let editandoIndex = null;
 
 
@@ -199,74 +266,6 @@ function archivarNota(id, estado) {
     mostrarNotas();
     mostrarArchivados();
   </script>
-
-<!-- ✅ SDKs de Firebase al final para asegurar orden correcto -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBbWF230CSuc_RyX2nZVZxFPGkPrQsQXxE",
-    authDomain: "notasfoliador.firebaseapp.com",
-    projectId: "notasfoliador",
-    storageBucket: "notasfoliador.appspot.com",
-    messagingSenderId: "449665263510",
-    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
-  };
-
-  // Inicializa Firebase correctamente
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-
-  // Autenticación segura
-  firebase.auth().onAuthStateChanged(function(user) {
-    if (!user) {
-      alert("🔒 Debes iniciar sesión para usar esta función.");
-      window.location.href = "login.html";
-    }
-  });
-
-function obtenerFolioYGuardar() {
-  const titulo = document.getElementById("titulo").value.trim();
-  const descripcion = document.getElementById("descripcion").value.trim();
-  if (!titulo || !descripcion) return alert("Llena ambos campos");
-
-  const folioRef = db.collection("config").doc("folio");
-
-  db.runTransaction((transaction) => {
-    return transaction.get(folioRef).then((doc) => {
-      let folioActual = 1;
-      if (doc.exists) {
-        folioActual = doc.data().valor + 1;
-      }
-
-      transaction.set(folioRef, { valor: folioActual });
-
-      const datos = {
-        titulo,
-        descripcion,
-        fecha: new Date().toISOString(),
-        folio: folioActual,
-        archivado: false
-      };
-
-      return db.collection("pedidosAppWeb").add(datos);
-    });
-  }).then(() => {
-    alert("Pedido guardado con folio");
-    document.getElementById("titulo").value = "";
-    document.getElementById("descripcion").value = "";
-    mostrarNotas();
-    mostrarArchivados();
-    mostrarSeccion('resumen');
-  }).catch((error) => {
-    console.error("Error al guardar con folio:", error);
-    alert("Hubo un error al guardar el pedido con folio.");
-  });
-}
-</script>
-
 
 
 
