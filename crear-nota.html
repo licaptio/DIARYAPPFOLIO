@@ -129,31 +129,39 @@ async function loadExistingNote(id) {
       return next;
     }
 
-    async function saveNote() {
-      const author = document.getElementById("author").value.trim() || "Anónimo";
-      const content = document.getElementById("content").value.trim();
-      if (!content) return alert("El contenido está vacío");
+async function saveNote() {
+  const author = document.getElementById("author").value.trim() || "Anónimo";
+  const content = document.getElementById("content").value.trim();
+  if (!content) return alert("El contenido está vacío");
 
-      const now = new Date();
-      const date = now.toLocaleDateString();
-      const time = now.toLocaleTimeString();
-      const folio = await getNextFolio();
+  const now = new Date();
+  const date = now.toLocaleDateString();
+  const time = now.toLocaleTimeString();
+  const folio = await getNextFolio();
 
-      await addDoc(collection(db, "notas"), {
-        author,
-        content,
-        date,
-        time,
-        timestamp: now.toISOString(),
-        folio,
-        archived: false,
-        important: false
-      });
+  // Crear nueva nota con nuevo folio
+  await addDoc(collection(db, "notas"), {
+    author,
+    content,
+    date,
+    time,
+    timestamp: now.toISOString(),
+    folio,
+    archived: false,
+    important: false
+  });
 
-      alert("Nota guardada");
-      document.getElementById("author").value = "";
-      document.getElementById("content").value = "";
-    }
+  // Si era una edición, eliminar la original
+  if (noteId) {
+    const ref = doc(db, "notas", noteId);
+    await setDoc(ref, {}, { merge: false }); // opcional: limpia el doc antes
+    await ref.delete?.() ?? await deleteDoc(ref); // compatibilidad
+  }
+
+  alert("Nota guardada");
+  window.location.href = "index.html"; // redirige al menú
+}
+
 
     window.saveNote = saveNote;
   </script>
