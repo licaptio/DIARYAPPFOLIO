@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ver Nota</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #e8f5e9;
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      color: #2e7d32;
+    }
+    .container {
+      background: white;
+      border-left: 10px solid #4CAF50;
+      padding: 30px;
+      max-width: 600px;
+      margin: auto;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #388e3c;
+    }
+    p {
+      white-space: pre-wrap;
+      font-size: 1.1em;
+    }
+    small {
+      color: #666;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: white;
+      background: #4CAF50;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2 id="title">Cargando...</h2>
+    <p id="content"></p>
+    <small id="datetime"></small><br>
+    <a href="resumen.html">← Regresar al resumen</a>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
+      authDomain: "notasfoliador.firebaseapp.com",
+      projectId: "notasfoliador",
+      storageBucket: "notasfoliador.firebasestorage.app",
+      messagingSenderId: "449665263510",
+      appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    async function loadNote() {
+      const ref = doc(db, "notas", id);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const note = snap.data();
+        document.getElementById("title").textContent = `Folio ${note.folio} - ${note.author}`;
+        document.getElementById("content").textContent = note.content;
+        document.getElementById("datetime").textContent = `${note.date} ${note.time}`;
+      } else {
+        document.getElementById("title").textContent = "Nota no encontrada";
+      }
+    }
+
+    loadNote();
+  </script>
+</body>
+</html>

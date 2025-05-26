@@ -2,53 +2,157 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Menú Principal - Notas</title>
+  <meta charset="UTF-8">
+  <title>Resumen de Notas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background-color: #eef2f7;
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
       margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    .menu-container {
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      text-align: center;
+      padding: 20px;
     }
     h1 {
-      margin-bottom: 30px;
+      text-align: center;
       color: #333;
     }
-    a {
-      display: block;
-      text-decoration: none;
-      background: #4CAF50;
-      color: white;
-      padding: 14px 20px;
-      margin: 10px 0;
-      border-radius: 8px;
-      font-size: 1.1em;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: auto;
     }
-    a:hover {
-      background: #45a049;
+    .card {
+      background: #e0f7e9;
+      border: 2px solid #4CAF50;
+      padding: 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+      position: relative;
     }
+    .card:hover {
+      transform: scale(1.03);
+    }
+    .card h4 {
+      margin: 0;
+      color: #2e7d32;
+    }
+    .urgent {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      color: red;
+      font-weight: bold;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.left {
+  flex: 2;
+  min-width: 320px;
+}
+
+.right {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 20px;
+  background-color: #d7ebff;
+  border-radius: 10px;
+  height: fit-content;
+}
+
+.right button {
+  padding: 12px;
+  font-size: 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.right button:hover {
+  background-color: #357abd;
+}
+
+
+
   </style>
 </head>
 <body>
-  <div class="menu-container">
-    <h1>Menú Principal</h1>
-    <a href="crear-nota.html">📝 Crear Nota</a>
-    <a href="ver-notas.html">📄 Ver Notas Activas</a>
-    <a href="ver-archivadas.html">🗃️ Ver Archivadas</a>
-    <a href="resumen.html">📊 Resumen de Notas</a>
+<h1>Resumen de Notas</h1>
+<div class="layout">
+  <div class="left">
+    <div class="grid" id="notes-summary"></div>
   </div>
+  <div class="right">
+    <button onclick="window.location.href='crear-nota.html'">➕ Crear Nota</button>
+    <button onclick="window.location.href='ver-notas.html'">📋 Ver Notas</button>
+    <button onclick="window.location.href='ver-archivadas.html'">🗃 Ver Archivadas</button>
+  </div>
+</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      orderBy,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
+      authDomain: "notasfoliador.firebaseapp.com",
+      projectId: "notasfoliador",
+      storageBucket: "notasfoliador.firebasestorage.app",
+      messagingSenderId: "449665263510",
+      appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const container = document.getElementById("notes-summary");
+
+    async function loadNotes() {
+      const q = query(collection(db, "notas"), orderBy("folio", "desc"));
+      const snap = await getDocs(q);
+      snap.forEach(docSnap => {
+        const note = docSnap.data();
+        const id = docSnap.id;
+        const div = document.createElement("div");
+        div.className = "card";
+        div.innerHTML = `
+          <h4>Folio ${note.folio}</h4>
+          <p>${note.author}</p>
+          ${note.urgente ? '<div class="urgent">⚠</div>' : ''}
+        `;
+        div.onclick = () => {
+          window.location.href = `ver-resumen.html?id=${id}`;
+        };
+        container.appendChild(div);
+      });
+    }
+
+    loadNotes();
+  </script>
 </body>
 </html>

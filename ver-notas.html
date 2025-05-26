@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Ver Notas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .note {
+      background: #fff;
+      padding: 20px;
+      margin: 15px auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      max-width: 600px;
+      position: relative;
+    }
+    .note h3 {
+      margin: 0 0 10px 0;
+      color: #4CAF50;
+    }
+    .note small {
+      color: #777;
+    }
+    .actions {
+      margin-top: 10px;
+    }
+    .actions button {
+      margin-right: 10px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+    }
+    .edit { background-color: #2196F3; }
+    .archive { background-color: #FF9800; }
+    .delete { background-color: #F44336; }
+  </style>
+</head>
+<body>
+  <h1>Ver Notas</h1>
+  <div id="notes-container"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      where,
+      orderBy,
+      getDocs,
+      deleteDoc,
+      updateDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
+      authDomain: "notasfoliador.firebaseapp.com",
+      projectId: "notasfoliador",
+      storageBucket: "notasfoliador.firebasestorage.app",
+      messagingSenderId: "449665263510",
+      appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const container = document.getElementById("notes-container");
+
+    async function loadNotes() {
+      const q = query(
+        collection(db, "notas"),
+        where("archived", "==", false),
+        orderBy("folio", "desc")
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach(d => {
+        const note = d.data();
+        const noteId = d.id;
+        const div = document.createElement("div");
+        div.className = "note";
+        div.innerHTML = `
+          <h3>Folio ${note.folio}: ${note.author}</h3>
+          <p>${note.content}</p>
+          <small>${note.date} ${note.time}</small>
+          <div class="actions">
+            <button class="edit" onclick="window.location.href='crear-nota.html?id=${noteId}'">Editar</button>
+            <button class="archive" onclick="archiveNote('${noteId}')">Archivar</button>
+            <button class="delete" onclick="deleteNote('${noteId}')">Eliminar</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    window.archiveNote = async (id) => {
+      const ref = doc(db, "notas", id);
+      await updateDoc(ref, { archived: true });
+      alert("Nota archivada");
+      location.reload();
+    };
+
+    window.deleteNote = async (id) => {
+      if (confirm("¿Estás seguro de que quieres eliminar esta nota?")) {
+        await deleteDoc(doc(db, "notas", id));
+        alert("Nota eliminada");
+        location.reload();
+      }
+    };
+
+    loadNotes();
+  </script>
+</body>
+</html>
