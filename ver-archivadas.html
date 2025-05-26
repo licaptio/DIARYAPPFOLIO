@@ -40,52 +40,62 @@
 
   <div id="archived-notes-container"></div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      query,
-      where,
-      orderBy,
-      getDocs
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import {
+    getFirestore,
+    collection,
+    query,
+    where,
+    orderBy,
+    getDocs,
+    updateDoc,
+    doc
+  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
-      authDomain: "notasfoliador.firebaseapp.com",
-      projectId: "notasfoliador",
-      storageBucket: "notasfoliador.firebasestorage.app",
-      messagingSenderId: "449665263510",
-      appId: "1:449665263510:web:b049e4c02babe203da1fb7"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
+    authDomain: "notasfoliador.firebaseapp.com",
+    projectId: "notasfoliador",
+    storageBucket: "notasfoliador.firebasestorage.app",
+    messagingSenderId: "449665263510",
+    appId: "1:449665263510:web:b049e4c02babe203da1fb7"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const container = document.getElementById("archived-notes-container");
 
-    const container = document.getElementById("archived-notes-container");
+  async function loadArchivedNotes() {
+    const q = query(
+      collection(db, "notas"),
+      where("archivada", "==", true),
+      orderBy("folio", "desc")
+    );
+    const snap = await getDocs(q);
+    snap.forEach(docSnap => {
+      const note = docSnap.data();
+      const id = docSnap.id;
+      const div = document.createElement("div");
+      div.className = "note";
+      div.innerHTML = `
+        <h3>Folio ${note.folio}: ${note.author}</h3>
+        <p>${note.content}</p>
+        <small>${note.date} ${note.time}</small><br>
+        <button onclick="unarchiveNote('${id}')" style="margin-top:10px; padding:8px 14px; background-color:#2196F3; color:white; border:none; border-radius:6px; cursor:pointer;">🔓 Desarchivar</button>
+      `;
+      container.appendChild(div);
+    });
+  }
 
-    async function loadArchivedNotes() {
-      const q = query(
-        collection(db, "notas"),
-        where("archived", "==", true),
-        orderBy("folio", "desc")
-      );
-      const snap = await getDocs(q);
-      snap.forEach(docSnap => {
-        const note = docSnap.data();
-        const div = document.createElement("div");
-        div.className = "note";
-        div.innerHTML = `
-          <h3>Folio ${note.folio}: ${note.author}</h3>
-          <p>${note.content}</p>
-          <small>${note.date} ${note.time}</small>
-        `;
-        container.appendChild(div);
-      });
-    }
+  window.unarchiveNote = async (id) => {
+    const ref = doc(db, "notas", id);
+    await updateDoc(ref, { archivada: false });
+    alert("Nota desarchivada");
+    location.reload();
+  };
 
-    loadArchivedNotes();
-  </script>
+  loadArchivedNotes();
+</script>
 </body>
 </html>
