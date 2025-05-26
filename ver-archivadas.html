@@ -69,7 +69,7 @@
   async function loadArchivedNotes() {
     const q = query(
       collection(db, "notas"),
-      where("archivada", "==", true),
+where("archived", "==", true)
       orderBy("folio", "desc")
     );
     const snap = await getDocs(q);
@@ -90,12 +90,14 @@
 
   window.unarchiveNote = async (id) => {
     const ref = doc(db, "notas", id);
-    await updateDoc(ref, { archivada: false });
+await updateDoc(ref, { archived: false });
     alert("Nota desarchivada");
     location.reload();
   };
 
   loadArchivedNotes();
+
+
 </script>
 </body>
 </html>
