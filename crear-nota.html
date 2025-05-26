@@ -55,7 +55,7 @@
 </head>
 <body>
   <div class="box">
-    <h1>Crear Nota</h1>
+<h1 id="form-title">Crear Nota</h1>
     <input type="text" id="author" placeholder="Autor (opcional)">
     <textarea id="content" placeholder="Contenido de la nota"></textarea>
 <button onclick="saveNote()">Guardar Nota</button>
@@ -85,6 +85,24 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+const params = new URLSearchParams(window.location.search);
+const noteId = params.get("id");
+
+if (noteId) {
+  loadExistingNote(noteId);
+}
+
+async function loadExistingNote(id) {
+  const ref = doc(db, "notas", id);
+  const snap = await getDoc(ref);
+  if (snap.exists()) {
+    const note = snap.data();
+    document.getElementById("author").value = note.author;
+    document.getElementById("content").value = note.content;
+    document.getElementById("form-title").textContent = "Editar Nota (nuevo folio)";
+  }
+}
+
 
     async function getNextFolio() {
       const ref = doc(db, "config", "folio");
