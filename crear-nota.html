@@ -158,8 +158,8 @@ async function saveNote() {
     await ref.delete?.() ?? await deleteDoc(ref); // compatibilidad
   }
 
-  alert("Nota guardada");
-  window.location.href = "index.html"; // redirige al menú
+alert(noteId ? "Nota actualizada con nuevo folio" : "Nota guardada");
+window.location.href = "index.html";
 }
 
 
