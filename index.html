@@ -1,121 +1,54 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Notas App</title>
+  <title>Menú Principal - Notas</title>
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', Tahoma, sans-serif;
-      background-color: #ffffff;
+      background-color: #eef2f7;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .menu-container {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
     }
     h1 {
-      text-align: center;
-      margin-top: 40px;
+      margin-bottom: 30px;
+      color: #333;
     }
-    .nav-buttons {
-      text-align: center;
-      padding: 10px;
-    }
-    .nav-buttons button {
-      margin: 5px;
-      padding: 10px 20px;
-      background: #4CAF50;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .section {
-      display: none;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-    }
-    .section.active {
+    a {
       display: block;
-    }
-    .main-container {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      max-width: 1000px;
-      width: 100%;
-    }
-    .note-form-section {
-      max-width: 400px;
-      width: 100%;
-    }
-    .notes-summary, .notes-list {
-      max-width: 400px;
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      background: #fff;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .note-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .note-form input, .note-form textarea {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    .note-form button {
-      padding: 12px;
+      text-decoration: none;
       background: #4CAF50;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
+      color: white;
+      padding: 14px 20px;
+      margin: 10px 0;
+      border-radius: 8px;
+      font-size: 1.1em;
     }
-    .note-card {
-      background: white;
-      padding: 15px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .note-card.important {
-      border: 2px solid lime;
-      box-shadow: 0 0 10px lime;
+    a:hover {
+      background: #45a049;
     }
   </style>
 </head>
 <body>
-  <h1>Notas App (Sin Login)</h1>
-  <div class="nav-buttons">
-    <button onclick="showSection('menu')">Menu Principal</button>
-    <button onclick="showSection('activas')">Ver Notas Activas</button>
-    <button onclick="showSection('archivadas')">Ver Archivadas</button>
+  <div class="menu-container">
+    <h1>Menú Principal</h1>
+    <a href="crear-nota.html">📝 Crear Nota</a>
+    <a href="ver-notas.html">📄 Ver Notas Activas</a>
+    <a href="ver-archivadas.html">🗃️ Ver Archivadas</a>
+    <a href="resumen.html">📊 Resumen de Notas</a>
   </div>
-  <div id="menu" class="section">
-    <div class="main-container">
-      <div class="note-form-section">
-        <div class="note-form">
-          <input type="text" id="author" placeholder="Autor (opcional)" />
-          <textarea id="content" placeholder="Contenido de la nota"></textarea>
-          <button onclick="saveNote()">Guardar Nota</button>
-        </div>
-      </div>
-      <div class="notes-summary">
-        <h3>Resumen de Notas Activas</h3>
-        <div id="notes-summary-container"></div>
-      </div>
-    </div>
-  </div>
-  <div id="activas" class="section">
-    <h2>Notas Activas</h2>
-    <div id="active-notes-container" class="notes-list"></div>
-  </div>
-  <div id="archivadas" class="section">
-    <h2>Notas Archivadas</h2>
-    <div id="archived-notes-container" class="notes-list"></div>
-  </div>
-  <script type="module" src="unificado.js"></script>
 </body>
 </html>
