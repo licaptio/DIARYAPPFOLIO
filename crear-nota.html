@@ -79,14 +79,15 @@ textarea {
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      getDoc,
-      setDoc,
-      doc
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDoc,
+  setDoc,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBbWF23OCSuc_RyX2nZVZxFPGkPrQsQXxE",
@@ -154,16 +155,25 @@ async function saveNote() {
   // Si era una edición, eliminar la original
   if (noteId) {
     const ref = doc(db, "notas", noteId);
-    await setDoc(ref, {}, { merge: false }); // opcional: limpia el doc antes
-    await ref.delete?.() ?? await deleteDoc(ref); // compatibilidad
+await deleteDoc(ref);
   }
 
 alert(noteId ? "Nota actualizada con nuevo folio" : "Nota guardada");
 window.location.href = "index.html";
 }
 
+alert(noteId ? "Nota actualizada con nuevo folio" : "Nota guardada");
+setTimeout(() => {
+  window.location.href = "index.html";
+}, 100);
 
-    window.saveNote = saveNote;
+
+window.saveNote = saveNote;
+
+
+
+
+
   </script>
 </body>
 </html>
