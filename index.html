@@ -92,6 +92,22 @@
   background-color: #357abd;
 }
 
+.attention {
+  border: 2px solid red !important;
+  animation: blinkRed 1s infinite;
+}
+
+.attention .urgent-text {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+  display: block;
+}
+
+@keyframes blinkRed {
+  0%, 100% { background-color: #ffe5e5; }
+  50% { background-color: #ffcccc; }
+}
 
 
   </style>
@@ -141,13 +157,37 @@ async function loadNotes() {
 
     // Solo mostrar si NO está archivada
 if (!note.archived) {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <h4>Folio ${note.folio}</h4>
-        <p>${note.author}</p>
-        ${note.urgente ? '<div class="urgent">⚠</div>' : ''}
-      `;
+const div = document.createElement("div");
+div.className = "card";
+const isMarked = localStorage.getItem(`attention_${id}`) === "true";
+if (isMarked) div.classList.add("attention");
+
+div.innerHTML = `
+  <h4>Folio ${note.folio}</h4>
+  <p>${note.author}</p>
+  <label style="display:flex; align-items:center; gap:6px; margin-top:8px;">
+    <input type="checkbox" ${isMarked ? "checked" : ""} style="transform: scale(1.2); cursor:pointer;">
+    Atención inmediata
+  </label>
+  <span class="urgent-text" style="display: ${isMarked ? "block" : "none"};">⚠ Atención inmediata</span>
+`;
+const checkbox = div.querySelector("input[type='checkbox']");
+const urgentText = div.querySelector(".urgent-text");
+
+checkbox.addEventListener("click", (e) => {
+  e.stopPropagation(); // Evita que el click del checkbox active el div
+  if (checkbox.checked) {
+    div.classList.add("attention");
+    urgentText.style.display = "block";
+    localStorage.setItem(`attention_${id}`, "true");
+  } else {
+    div.classList.remove("attention");
+    urgentText.style.display = "none";
+    localStorage.setItem(`attention_${id}`, "false");
+  }
+});
+
+
       div.onclick = () => {
         window.location.href = `ver-resumen.html?id=${id}`;
       };
